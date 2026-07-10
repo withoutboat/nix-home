@@ -8,16 +8,14 @@
   };
 
   outputs = { self, nixpkgs, home-manager }: {
-    # Этот модуль мы импортируем в nix-core
-    homeModules.default = { config, pkgs, ... }: {
+    homeModules.default = { pkgs, username ... }: {
       imports = [
       ];
 
-      home.username = config.home.username; 
-      home.homeDirectory = "/home/${config.home.username}";
+      home.username = username;
+      home.homeDirectory = "/home/${username}";
       home.stateVersion = "26.11";
 
-      # Позволяет управлять Home Manager через NixOS
       programs.home-manager.enable = true;
     };
   };
