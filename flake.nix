@@ -8,7 +8,7 @@
   };
 
   outputs = { self, nixpkgs, home-manager }: {
-    homeModules.default = { pkgs, username ... }: {
+    homeModules.default = { pkgs, username, ... }: {
       imports = [
       ];
 
