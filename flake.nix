@@ -10,6 +10,7 @@
   outputs = { self, nixpkgs, home-manager }: {
     homeModules.default = { pkgs, username, ... }: {
       imports = [
+        ./modules/hyprland.nix
       ];
 
       home.username = username;
