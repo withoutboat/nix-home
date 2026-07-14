@@ -13,7 +13,6 @@
 
       imports = [
         ./modules/wyland.nix
-        ./modules/hyprland.nix
       ];
 
       home.username = username;
