@@ -10,7 +10,7 @@
 
   outputs = { self, nixpkgs, home-manager, hyprland, ... }@inputs: {
     homeModules.default = { pkgs, username, ... }: {
-      extraSpecialArgs = { inherit inputs; };
+      specialArgs = { inherit inputs; };
 
       imports = [
         ./modules/hyprland.nix
