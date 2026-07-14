@@ -47,7 +47,7 @@
     bind = $mod, V, togglefloating,
     bind = $mod, D, exec, wofi --show drun
     bind = $mod, P, pseudo,
-    bind = $mod, J, togglesplit,
+    bind = $mod, J, layoutmsg, togglesplit
 
     bind = $mod, left, movefocus, l
     bind = $mod, right, movefocus, r
