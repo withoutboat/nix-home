@@ -1,30 +1,37 @@
-{ pkgs, inputs, ... }:
+{ pkgs, ... }:
+let
+  mod = "SUPER";
+in
 {
   wayland.windowManager.hyprland = {
     enable = true;
-    package = inputs.hyprland.packages.${pkgs.system}.hyprland;
-    portalPackage = inputs.hyprland.packages.${pkgs.system}.xdg-desktop-portal-hyprland;
-  }; 
+    package = null;
+    portalPackage = null;
+  };
 
   wayland.windowManager.hyprland.settings = {
-    "$mod" = "SUPER";
+    mainMod = mod;
 
     monitor = ",preferred,auto,1";
 
     input = {
       kb_layout = "us";
       follow_mouse = 1;
-      touchpad.natural_scroll = true;
+      touchpad = {
+        natural_scroll = true;
+      };
     };
 
     general = {
+      border_size = 2;
       gaps_in = 4;
       gaps_out = 8;
-      border_size = 2;
       layout = "dwindle";
     };
 
-    decoration.rounding = 8;
+    decoration = {
+      rounding = 8;
+    };
 
     misc = {
       force_default_wallpaper = 0;
@@ -38,30 +45,29 @@
     ];
 
     bind = [
-      "$mod, Q, exec, ghostty"
-      "$mod, C, killactive,"
-      "$mod, M, exit,"
-      "$mod, F, fullscreen,"
-      "$mod, V, togglefloating,"
-      "$mod, D, exec, wofi --show drun"
-      "$mod, P, pseudo,"
-      "$mod, J, layoutmsg, togglesplit"
+      "${mod}, Q, exec, ghostty"
+      "${mod}, C, killactive,"
+      "${mod}, M, exit,"
+      "${mod}, F, fullscreen,"
+      "${mod}, V, togglefloating,"
+      "${mod}, D, exec, wofi --show drun"
+      "${mod}, P, pseudo,"
+      "${mod}, J, layoutmsg, togglesplit"
       
-      "$mod, left, movefocus, l"
-      "$mod, right, movefocus, r"
-      "$mod, up, movefocus, u"
-      "$mod, down, movefocus, d"
+      "${mod}, left, movefocus, l"
+      "${mod}, right, movefocus, r"
+      "${mod}, up, movefocus, u"
+      "${mod}, down, movefocus, d"
       
-      "$mod SHIFT, left, movewindow, l"
-      "$mod SHIFT, right, movewindow, r"
-      "$mod SHIFT, up, movewindow, u"
-      "$mod SHIFT, down, movewindow, d"
-    ] ++ (
-      builtins.concatLists (builtins.genList (i:
+      "${mod} SHIFT, left, movewindow, l"
+      "${mod} SHIFT, right, movewindow, r"
+      "${mod} SHIFT, up, movewindow, u"
+      "${mod} SHIFT, down, movewindow, d"
+    ] ++ (builtins.concatLists (builtins.genList (i:
         let ws = i + 1;
         in [
-          "$mod, code:1${toString i}, workspace, ${toString ws}"
-          "$mod SHIFT, code:1${toString i}, movetoworkspace, ${toString ws}"
+          "${mod}, code:1${toString i}, workspace, ${toString ws}"
+          "${mod} SHIFT, code:1${toString i}, movetoworkspace, ${toString ws}"
         ]
       ) 9)
     );
