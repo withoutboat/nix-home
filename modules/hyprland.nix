@@ -1,12 +1,10 @@
-{ pkgs, lib, ... }:
+{ pkgs, inputs, ... }:
 {
   wayland.windowManager.hyprland = {
     enable = true;
-    package = null;
-    portalPackage = null;
+    package = inputs.hyprland.packages.${pkgs.system}.hyprland;
+    portalPackage = inputs.hyprland.packages.${pkgs.system}.xdg-desktop-portal-hyprland;
   }; 
-
-  xdg.portal.enable = lib.mkForce false;
 
   wayland.windowManager.hyprland.settings = {
     "$mod" = "SUPER";
