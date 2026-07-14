@@ -7,10 +7,13 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, home-manager }: {
+  outputs = { self, nixpkgs, home-manager, hyprland } @ inputs: {
     homeModules.default = { pkgs, username, ... }: {
+      extraSpecialArgs = { inherit inputs; };
+
       imports = [
         ./modules/hyprland.nix
+        ./modules/
       ];
 
       home.username = username;
