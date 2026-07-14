@@ -12,7 +12,7 @@
       extraSpecialArgs = { inherit inputs; };
 
       imports = [
-        ./modules/wyland.nix
+        ./modules/hyperland.nix
       ];
 
       home.username = username;
