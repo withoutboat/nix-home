@@ -40,7 +40,7 @@
       disable_hyprland_logo = true
     }
 
-    bind = $mod, Q, exec, kitty
+    bind = $mod, Q, exec, ghostty
     bind = $mod, C, killactive,
     bind = $mod, M, exit,
     bind = $mod, F, fullscreen,
