@@ -12,8 +12,8 @@
       extraSpecialArgs = { inherit inputs; };
 
       imports = [
-        ./modules/hyprland.nix
         ./modules/wyland.nix
+        ./modules/hyprland.nix
       ];
 
       home.username = username;
