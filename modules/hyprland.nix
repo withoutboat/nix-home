@@ -38,7 +38,7 @@ in
       disable_hyprland_logo = true;
     };
 
-    exec-once = [
+    "exec-once" = [
       "hyprpaper"
       "waybar"
       "mako"
