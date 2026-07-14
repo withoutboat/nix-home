@@ -6,10 +6,7 @@
     portalPackage = null;
   }; 
 
-  xdg.portal = {
-    enable = true;
-    extraPortals = []; 
-  };
+  xdg.portal.enable = lib.mkForce false;
 
   wayland.windowManager.hyprland.settings = {
     "$mod" = "SUPER";
