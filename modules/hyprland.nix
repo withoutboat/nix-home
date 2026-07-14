@@ -6,6 +6,11 @@
     portalPackage = null;
   }; 
 
+  xdg.portal = {
+    enable = true;
+    extraPortals = []; 
+  };
+
   wayland.windowManager.hyprland.settings = {
     "$mod" = "SUPER";
 
