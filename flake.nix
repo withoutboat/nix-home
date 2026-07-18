@@ -8,7 +8,7 @@
     nix-hyprland.url = "github:withoutboat/nix-hyprland";
   };
 
-  outputs = { self, nixpkgs, home-manager, hyprland, ... }@inputs: {
+  outputs = { self, nixpkgs, home-manager, nix-hyprland, ... }@inputs: {
     homeModules.default = { pkgs, username, ... }: {
       imports = [
         nix-hyprland.homeManagerModules.default
