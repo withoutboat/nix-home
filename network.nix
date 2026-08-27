@@ -46,15 +46,15 @@
 
         configFile = lib.mkOption {
           type = with lib.types; nullOr str;
-          default = builtins.toString ./amnezia_for_awg.conf;
+          default = null;
           example = "/run/secrets/amnezia/amnezia.conf";
           description = ''
             Path to an AmneziaWG 2.0 config in awg-quick format.
 
             The file is consumed at service start (not at Nix evaluation time), so
             secrets are not read with builtins.readFile and are not copied into the
-            Nix store by this module. By default, this points to the repository test
-            config `amnezia_for_awg.conf`.
+            Nix store by this module. This module does not provide a repository-local
+            fallback config file; pass an external path explicitly.
           '';
         };
 

@@ -26,8 +26,6 @@ In your NixOS flake/module set:
   services.amneziawg = {
     enable = true;
     interfaceName = "awg0";
-    # Optional: by default module uses test config from nix-home input
-    # (.../amnezia_for_awg.conf). Set this to switch to secret-managed file.
     configFile = "/run/secrets/amnezia/amnezia.conf";
     autoStart = true;
 
@@ -39,11 +37,10 @@ In your NixOS flake/module set:
 
 ## About `amnezia.conf` and secrets
 
-- Repository currently contains `amnezia_for_awg.conf` as a test config.
-- That test config includes private keys and should be replaced/removed later.
 - Do **not** keep a real long-lived `amnezia.conf` with private keys in Git.
 - Keep it outside Git (`/run/secrets/...`, `/etc/secrets/...`, sops/agenix, etc.).
 - This module does not use `builtins.readFile` for the config, so secret content is not read at evaluation time.
+- The module does not auto-load `./amnezia_for_awg.conf` (or any other repo-local fallback); set `services.amneziawg.configFile` explicitly in your NixOS config.
 
 ## Full-tunnel notes
 
