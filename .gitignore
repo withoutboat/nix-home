@@ -1,0 +1,4 @@
+# Local AmneziaWG configs and secrets
+amnezia.conf
+*.amnezia.conf
+secrets/amnezia/

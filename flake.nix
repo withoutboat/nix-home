@@ -8,17 +8,24 @@
     nix-hyprland.url = "github:withoutboat/nix-hyprland";
   };
 
-  outputs = { self, nixpkgs, home-manager, nix-hyprland, ... }@inputs: {
-    homeModules.default = { pkgs, username, ... }: {
-      imports = [
-        nix-hyprland.homeManagerModules.default
-      ];
+  outputs = { nix-hyprland, ... }:
+    let
+      networkModules = import ./network.nix;
+    in
+    {
+      homeModules.default = { pkgs, username, ... }: {
+        imports = [
+          nix-hyprland.homeManagerModules.default
+          networkModules.home
+        ];
 
-      home.username = username;
-      home.homeDirectory = "/home/${username}";
-      home.stateVersion = "26.11";
+        home.username = username;
+        home.homeDirectory = "/home/${username}";
+        home.stateVersion = "26.11";
 
-      programs.home-manager.enable = true;
+        programs.home-manager.enable = true;
+      };
+
+      nixosModules.amnezia = networkModules.nixos;
     };
-  };
 }
