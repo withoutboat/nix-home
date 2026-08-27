@@ -40,6 +40,7 @@ In your NixOS flake/module set:
 - Do **not** commit a real `amnezia.conf` with private keys.
 - Keep it outside Git (`/run/secrets/...`, `/etc/secrets/...`, sops/agenix, etc.).
 - This module does not use `builtins.readFile` for the config, so secret content is not read at evaluation time.
+- The module does not auto-load `./amnezia_for_awg.conf` (or any other repo-local fallback); set `services.amneziawg.configFile` explicitly in your NixOS config.
 
 ## Full-tunnel notes
 

@@ -53,7 +53,8 @@
 
             The file is consumed at service start (not at Nix evaluation time), so
             secrets are not read with builtins.readFile and are not copied into the
-            Nix store by this module.
+            Nix store by this module. This module does not provide a repository-local
+            fallback config file; pass an external path explicitly.
           '';
         };
 
