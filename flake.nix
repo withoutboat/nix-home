@@ -9,14 +9,10 @@
   };
 
   outputs = { nix-hyprland, ... }:
-    let
-      networkModules = import ./network.nix;
-    in
     {
       homeModules.default = { pkgs, username, ... }: {
         imports = [
           nix-hyprland.homeManagerModules.default
-          networkModules.home
         ];
 
         home.username = username;
@@ -25,7 +21,5 @@
 
         programs.home-manager.enable = true;
       };
-
-      nixosModules.amnezia = networkModules.nixos;
     };
 }
