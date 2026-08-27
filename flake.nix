@@ -13,6 +13,7 @@
       homeModules.default = { pkgs, username, ... }: {
         imports = [
           nix-hyprland.homeManagerModules.default
+          ./modules/firefox.nix
         ];
 
         home.username = username;
