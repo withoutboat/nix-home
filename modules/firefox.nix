@@ -8,10 +8,10 @@
       isDefault = true;
       name = "default";
 
-   #   extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-   #     ublock-origin
-   #     bitwarden
-   #   ];
+      extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+        ublock-origin
+        bitwarden
+      ];
 
       settings = {
         "browser.startup.page" = 3; # keep prev sessions
