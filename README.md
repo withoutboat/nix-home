@@ -21,39 +21,39 @@ Machine-specific system networking and VPN setup should live in `withoutboat/nix
 }
 ```
 
-## Управление сессиями (Zellij & Sessionizer)
+## Session Management (Zellij & Sessionizer)
 
-Конфигурация включает полноценный стек сессионизации, заменяющий `tmux-sessionizer` и связку tmux:
+The configuration provides a complete sessionization workflow replacing `tmux-sessionizer` and the legacy tmux setup:
 
 ### 1. Zellij Sessionizer (`zellij-sessionizer` / `zs` / `Ctrl+f`)
 
-Скрипт быстрого поиска проектов и сессий через `fzf`:
+A quick project and session switcher powered by `fzf`:
 
-- **Быстрый вызов**: нажать `Ctrl+f` в Zsh или запустить `zs` / `zellij-sessionizer`.
-- **Поиск**: сканирует рабочие каталоги (`~/hiplabs`, `~/personal`, `~/nix-core`, `~/nix-home`, `~/.dotfiles` и др.).
-- **Поведение вне Zellij**: подключается к существующей сессии или создаёт новую с именем проекта и переходом в целевую директорию (`zellij attach -c <project>`).
-- **Поведение внутри Zellij**: открывает новую вкладку с именем проекта в выбранном каталоге (`zellij action new-tab --cwd ...`).
+- **Quick launch**: press `Ctrl+f` in Zsh or run `zs` / `zellij-sessionizer`.
+- **Search paths**: scans configured workspace roots (`~/hiplabs`, `~/personal`, `~/nix-core`, `~/nix-home`, `~/.dotfiles`, etc.).
+- **Outside Zellij**: attaches to an existing session or creates a new one rooted in the chosen project directory (`zellij attach -c <project>`).
+- **Inside Zellij**: opens a new tab named after the project with its working directory set to that project (`zellij action new-tab --cwd ...`).
 
-### 2. Встроенный Session Manager (плавающее окно)
+### 2. Built-in Session Manager (Floating Window)
 
-- **`Alt+s`** (из любого режима) или **`Ctrl+o` → `w`**: открывает плавающее окно менеджера сессий Zellij.
-- Интерактивный поиск и мгновенное переключение между запущенными сессиями без закрытия терминала.
-- Воскрешение (resurrect) закрытых сессий с сохранением лейаутов и запущенных утилит.
-- Создание новых изолированных сессий и переименование текущих.
+- **`Alt+s`** (from any mode) or **`Ctrl+o` → `w`**: opens Zellij's floating session manager.
+- Interactive fuzzy search and instant switching between running sessions without exiting the terminal.
+- Resurrect exited sessions with their saved pane layouts and command history.
+- Create new isolated sessions and rename current sessions.
 
-### 3. Быстрые хоткеи Zellij
+### 3. Essential Zellij Keybindings
 
-- **`Ctrl+o` → `d`**: отключиться от сессии (detach), сессия продолжит работать в фоне.
-- **`Alt+s`**: переключить/выбрать сессию через плавающий session-manager.
-- **`Ctrl+t` → `n`**: создать новую вкладку (tab).
-- **`Ctrl+p` → `n`**: создать новый сплит/панель (pane).
-- **`Ctrl+p` → `w`**: плавающий режим текущей панели (floating toggle).
-- **`Ctrl+q`**: закрыть текущую панель.
-- **`Ctrl+o` → `q`**: закрыть сессию целиком.
+- **`Ctrl+o` → `d`**: detach from the current session (leaves processes running in background).
+- **`Alt+s`**: switch/select sessions via the floating session-manager.
+- **`Ctrl+t` → `n`**: create a new tab.
+- **`Ctrl+p` → `n`**: create a new pane.
+- **`Ctrl+p` → `w`**: toggle floating mode for the current pane.
+- **`Ctrl+q`**: close current pane.
+- **`Ctrl+o` → `q`**: quit and terminate session.
 
-### 4. Темы оформления (Stylix)
+### 4. Theming (Stylix)
 
-Модули Zellij, Starship и Nushell автоматически интегрированы со **Stylix**:
-- Цветовые палитры генерируются автоматически (Catppuccin Mocha / Catppuccin Latte).
-- Поддерживается бесшовное переключение через `theme-set light` / `theme-set dark` и системные таймеры.
+Zellij, Starship, and Nushell are configured with automatic **Stylix** theming:
+- Palettes are dynamically generated from base16 schemes (e.g. Catppuccin Mocha / Catppuccin Latte).
+- Automatically updates with `theme-set light` / `theme-set dark` and scheduled system timers.
 
