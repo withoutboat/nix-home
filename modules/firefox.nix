@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, nur, ... }:
 {
   programs.firefox = {
     enable = true;
@@ -8,7 +8,7 @@
       isDefault = true;
       name = "default";
 
-      extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+      extensions = with nur.repos.rycee.firefox-addons; [
         ublock-origin
         bitwarden
       ];
