@@ -6,19 +6,11 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     nix-hyprland.url = "github:withoutboat/nix-hyprland";
-    nur = {
-      url = "github:nix-community/NUR";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
-  outputs = { nix-hyprland, nur, ... }:
+  outputs = { nix-hyprland, ... }:
     {
       homeModules.default = { pkgs, username, ... }: {
-        nixpkgs.overlays = [
-          nur.overlays.default
-        ];
-
         imports = [
           nix-hyprland.homeManagerModules.default
           ./modules/firefox.nix
