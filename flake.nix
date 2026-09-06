@@ -14,6 +14,7 @@
         imports = [
           nix-hyprland.homeManagerModules.default
           ./modules/firefox.nix
+          ./modules/scripts.nix
           ./modules/sops.nix
           ./modules/ssh.nix
         ];
