@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ $# -eq 1 ]]; then
+    selected="$1"
+else
+    search_dirs=()
+    for dir in \
+        "$HOME" \
+        "$HOME/hiplabs" \
+        "$HOME/hiplabs/matb" \
+        "$HOME/hiplabs/zp" \
+        "$HOME/hiplabs/baseella" \
+        "$HOME/personal" \
+        "$HOME/personal/infra" \
+        "$HOME/.dotfiles" \
+        "$HOME/.dotfiles/bin/.local/bin" \
+        "$HOME/nix-core" \
+        "$HOME/nix-home"; do
+        if [[ -d "$dir" ]]; then
+            search_dirs+=("$dir")
+        fi
+    done
+
+    if [[ ${#search_dirs[@]} -eq 0 ]]; then
+        search_dirs=("$HOME")
+    fi
+
+    selected=$(find "${search_dirs[@]}" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | fzf --prompt="Select project > ")
+fi
+
+if [[ -z "${selected:-}" ]]; then
+    exit 0
+fi
+
+selected_name=$(basename "$selected" | tr . _)
+
+if [[ -z "${ZELLIJ:-}" ]]; then
+    # Outside Zellij: attach to existing session or create a new one in the selected folder
+    cd "$selected"
+    exec zellij attach -c "$selected_name"
+else
+    # Inside Zellij: open a new tab in the current session rooted in the selected directory
+    zellij action new-tab --cwd "$selected" --name "$selected_name"
+fi
