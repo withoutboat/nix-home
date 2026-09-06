@@ -19,6 +19,7 @@
             nix-ks3-infra.homeManagerModules.default
             ./modules/firefox.nix
             ./modules/ks3.nix
+            ./modules/scripts.nix
             ./modules/sops.nix
             ./modules/ssh.nix
           ];
