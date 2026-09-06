@@ -22,6 +22,7 @@
         imports = [
           nix-hyprland.homeManagerModules.default
           ./modules/firefox.nix
+          ./modules/ssh.nix
         ];
 
         home.username = username;
