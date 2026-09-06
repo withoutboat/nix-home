@@ -7,6 +7,7 @@
         hostname = "github.com";
         identityFile = "~/.ssh/id_ed25519_sk";
         identitiesOnly = true;
+        identityAgent = "none";
       };
     };
   };
