@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+STATE_FILE="${XDG_STATE_HOME:-$HOME/.local/state}/current-theme"
+
+CURRENT_THEME=""
+if [ -f "$STATE_FILE" ]; then
+  CURRENT_THEME="$(cat "$STATE_FILE")"
+fi
+
+if [ "$CURRENT_THEME" = "light" ]; then
+  theme-set dark
+else
+  theme-set light
+fi

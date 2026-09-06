@@ -23,6 +23,7 @@
             ./modules/firefox.nix
             ./modules/ks3.nix
             ./modules/neovim.nix
+            ./modules/scripts.nix
             ./modules/sops.nix
             ./modules/ssh.nix
           ];
