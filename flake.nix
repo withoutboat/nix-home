@@ -24,8 +24,10 @@
             ./modules/ks3.nix
             ./modules/neovim.nix
             ./modules/scripts.nix
+            ./modules/shell.nix
             ./modules/sops.nix
             ./modules/ssh.nix
+            ./modules/zellij.nix
           ];
 
           home.username = username;
@@ -46,6 +48,18 @@
           imports = [
             nix-neovim.homeManagerModules.default
             ./modules/neovim.nix
+          ];
+        };
+
+        shell = {
+          imports = [
+            ./modules/shell.nix
+          ];
+        };
+
+        zellij = {
+          imports = [
+            ./modules/zellij.nix
           ];
         };
       };
