@@ -1,0 +1,11 @@
+# SOPS configuration for nix-home
+# Public recipient format: age1yubikey1...
+
+keys:
+  - &yubikey_primary age1yubikey1q0jaun0q26r2m0z3gxlgg8u8f0m3ken0ku59y8emr0xesc5fuwqaxpq9k4n
+
+creation_rules:
+  - path_regex: (secrets|secret)/.*\.ya?ml$
+    key_groups:
+      - age:
+          - *yubikey_primary

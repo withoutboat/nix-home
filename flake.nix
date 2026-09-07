@@ -23,6 +23,7 @@
             ./modules/firefox.nix
             ./modules/ks3.nix
             ./modules/neovim.nix
+            ./modules/projects.nix
             ./modules/scripts.nix
             ./modules/shell.nix
             ./modules/sops.nix
@@ -48,6 +49,12 @@
           imports = [
             nix-neovim.homeManagerModules.default
             ./modules/neovim.nix
+          ];
+        };
+
+        projects = {
+          imports = [
+            ./modules/projects.nix
           ];
         };
 
