@@ -5,6 +5,7 @@
 - `homeModules.default` — Home Manager module with shared user configuration, `nix-hyprland`, `nix-ks3-infra`, and `nix-neovim`
 - `homeModules.neovim` — standalone Neovim configuration powered by NixVim (`withoutboat/nix-neovim`) with default editor settings and `v` / `vim` aliases
 - `homeModules.ks3` — standalone minimal K3s rootless service and Kubernetes tooling module (`programs.k3s-infra` / `services.k3s-infra`)
+- `homeModules.projects` — project and repository manager automating work/personal workspace cloning based on `secrets/projects.yml`
 - `homeModules.scripts` — custom scripts module exporting `zellij-sessionizer`, `theme-set`, and `theme-toggle`
 - `homeModules.shell` — shell configuration with Zsh, Nushell, Starship prompt, and Stylix theme integration
 - `homeModules.zellij` — Zellij terminal workspace and session manager with Nushell default shell, centered floating sessionizer popup, and Stylix theming
@@ -65,4 +66,27 @@ A quick project and session switcher powered by `fzf`, integrated directly into 
 Zellij, Starship, and Nushell are configured with automatic **Stylix** theming:
 - Palettes are dynamically generated from base16 schemes (e.g. Catppuccin Mocha / Catppuccin Latte).
 - Automatically updates with `theme-set light` / `theme-set dark` and scheduled system timers.
+
+## Project Management (`projects-sync` / `psync`)
+
+The `projects` module automates provisioning workspace folders and cloning work and personal repositories:
+
+### Configuration (`secrets/projects.yml`)
+
+Projects and their repositories are declared in `secrets/projects.yml`:
+
+```yaml
+- project_name:
+    - git@wb:project_name.git
+```
+
+This file can later be encrypted with `sops` (e.g. `sops -e -i secrets/projects.yml`). `projects-sync` automatically decrypts SOPS-encrypted files at runtime when `sops` and age identities are present.
+
+### How it works
+
+1. For each declared project (e.g. `work`, `personal`, `project_name`), a corresponding directory is created under `$HOME/` (e.g. `~/project_name`).
+2. All repositories listed under the project are cloned into `$HOME/<project_name>/<repo_name>`.
+3. Already cloned repositories are skipped safely without error.
+4. Synchronizes automatically during Home Manager activation and can be run manually via `projects-sync` (or alias `psync`).
+
 

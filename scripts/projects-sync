@@ -1,0 +1,209 @@
+#!/usr/bin/env python3
+import os
+import sys
+import re
+import shutil
+import argparse
+import subprocess
+from pathlib import Path
+
+def parse_projects_content(content):
+    """
+    Parses projects configuration from YAML or structured bullet text.
+    Returns dict of { project_name: [repo_url, ...] }
+    """
+    projects = {}
+
+    # Attempt PyYAML if available
+    try:
+        import yaml
+        data = yaml.safe_load(content)
+        if isinstance(data, list):
+            for item in data:
+                if isinstance(item, dict):
+                    if "name" in item and "repos" in item:
+                        repos = item["repos"] if isinstance(item["repos"], list) else [item["repos"]]
+                        projects[item["name"]] = repos
+                    else:
+                        for k, v in item.items():
+                            projects[k] = v if isinstance(v, list) else [v]
+                elif isinstance(item, str):
+                    projects[item] = []
+            if projects:
+                return projects
+        elif isinstance(data, dict):
+            for k, v in data.items():
+                projects[k] = v if isinstance(v, list) else [v]
+            if projects:
+                return projects
+    except Exception:
+        pass
+
+    # Line-by-line fallback parser for loose bullet points, tabs, or missing colons
+    current_proj = None
+    for line in content.splitlines():
+        line = line.rstrip()
+        if not line or line.strip().startswith("#"):
+            continue
+
+        # Check '- name: proj'
+        name_match = re.match(r'^\s*-\s+name:\s*([a-zA-Z0-9_\-\.\/]+)\s*$', line)
+        if name_match:
+            current_proj = name_match.group(1)
+            projects.setdefault(current_proj, [])
+            continue
+
+        if re.match(r'^\s*repos:\s*$', line):
+            continue
+
+        # Check project header: '- proj:', '- proj', or 'proj:'
+        proj_match = re.match(r'^(?:-\s+)?([a-zA-Z0-9_\-\.\/]+):\s*$', line)
+        if not proj_match:
+            proj_match = re.match(r'^-\s+([a-zA-Z0-9_\-\.\/]+)\s*$', line)
+
+        if proj_match and not line.strip().startswith("repos:"):
+            current_proj = proj_match.group(1)
+            projects.setdefault(current_proj, [])
+            continue
+
+        # Check repo entry: '  - url' or '\t- url'
+        repo_match = re.match(r'^\s*-\s+(\S+)\s*$', line)
+        if repo_match and current_proj:
+            repo_url = repo_match.group(1)
+            projects[current_proj].append(repo_url)
+
+    return projects
+
+def get_repo_name(url):
+    """
+    Extracts the repository directory name from git URL.
+    e.g. git@wb:project_name.git -> project_name
+         https://github.com/foo/bar.git -> bar
+    """
+    cleaned = url.rstrip("/")
+    name = cleaned.rsplit("/", 1)[-1].rsplit(":", 1)[-1]
+    if name.endswith(".git"):
+        name = name[:-4]
+    return name
+
+def read_projects_file(file_path):
+    """
+    Reads the projects file, decrypting via sops if encrypted.
+    """
+    path = Path(file_path).expanduser().resolve()
+    if not path.is_file():
+        raise FileNotFoundError(f"Projects file not found: {file_path}")
+
+    with open(path, "r", encoding="utf-8", errors="replace") as f:
+        raw = f.read()
+
+    # Check if sops encrypted
+    if "sops:" in raw or "ENC[" in raw:
+        sops_bin = shutil.which("sops")
+        if sops_bin:
+            res = subprocess.run([sops_bin, "-d", str(path)], capture_output=True, text=True)
+            if res.returncode == 0:
+                return res.stdout
+            else:
+                print(f"[warning] sops decryption failed: {res.stderr.strip()}", file=sys.stderr)
+                print("[warning] attempting to parse raw content", file=sys.stderr)
+        else:
+            print("[warning] sops binary not found; reading file as plain text", file=sys.stderr)
+
+    return raw
+
+def find_default_projects_file():
+    """
+    Searches known locations for projects.yml or projects.yaml.
+    """
+    env_file = os.environ.get("PROJECTS_FILE")
+    if env_file and Path(env_file).expanduser().is_file():
+        return str(Path(env_file).expanduser())
+
+    home = Path.home()
+    candidates = [
+        home / "nix-home" / "secrets" / "projects.yml",
+        home / "nix-home" / "secrets" / "projects.yaml",
+        home / "nix-home" / "secret" / "projects.yml",
+        home / "personal" / "nix-home" / "secrets" / "projects.yml",
+        home / "personal" / "nix-home" / "secrets" / "projects.yaml",
+        home / ".dotfiles" / "secrets" / "projects.yml",
+        home / "dotfiles" / "secrets" / "projects.yml",
+        Path(__file__).resolve().parent.parent / "secrets" / "projects.yml",
+        Path(__file__).resolve().parent.parent / "secret" / "projects.yml",
+    ]
+
+    fallback = os.environ.get("DEFAULT_PROJECTS_FALLBACK")
+    if fallback and Path(fallback).expanduser().is_file():
+        candidates.append(Path(fallback).expanduser())
+
+    for cand in candidates:
+        if cand.is_file():
+            return str(cand)
+
+    return None
+
+def sync_projects(file_path=None, dry_run=False):
+    if not file_path:
+        file_path = find_default_projects_file()
+
+    if not file_path or not Path(file_path).expanduser().is_file():
+        print(f"[error] Could not find projects configuration file.", file=sys.stderr)
+        if file_path:
+            print(f"Checked: {file_path}", file=sys.stderr)
+        print("Please provide the file path via --file or set PROJECTS_FILE.", file=sys.stderr)
+        return 1
+
+    print(f"==> Loading projects from {file_path}")
+    content = read_projects_file(file_path)
+    projects = parse_projects_content(content)
+
+    if not projects:
+        print("[warning] No projects found in configuration.")
+        return 0
+
+    home = Path.home()
+    has_errors = False
+
+    for proj_name, repos in projects.items():
+        proj_dir = home / proj_name
+        print(f"\n[project] {proj_name} -> {proj_dir}")
+
+        if not dry_run:
+            proj_dir.mkdir(parents=True, exist_ok=True)
+
+        for repo_url in repos:
+            repo_name = get_repo_name(repo_url)
+            repo_dir = proj_dir / repo_name
+
+            if (repo_dir / ".git").is_dir():
+                print(f"  [ok] {repo_name} already cloned at {repo_dir}")
+                continue
+
+            if repo_dir.exists():
+                print(f"  [warn] {repo_dir} exists but is not a git repository, skipping")
+                continue
+
+            print(f"  [clone] {repo_url} -> {repo_dir}")
+            if dry_run:
+                continue
+
+            git_bin = shutil.which("git") or "git"
+            res = subprocess.run([git_bin, "clone", repo_url, str(repo_dir)])
+            if res.returncode != 0:
+                print(f"  [error] Failed to clone {repo_url} (exit code {res.returncode})", file=sys.stderr)
+                has_errors = True
+
+    print("\n==> Projects sync completed" + (" with some errors" if has_errors else " successfully"))
+    return 1 if has_errors else 0
+
+def main():
+    parser = argparse.ArgumentParser(description="Synchronize personal and work repositories based on projects.yml")
+    parser.add_argument("-f", "--file", help="Path to projects.yml file")
+    parser.add_argument("-n", "--dry-run", action="store_true", help="Print actions without creating folders or cloning")
+    args = parser.parse_args()
+
+    return sync_projects(file_path=args.file, dry_run=args.dry_run)
+
+if __name__ == "__main__":
+    sys.exit(main())
