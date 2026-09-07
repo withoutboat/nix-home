@@ -1,10 +1,11 @@
-{ pkgs, lib, options, ... }:
+{ lib, options, ... }:
 
-let
-  zellij-sessionizer = pkgs.writeShellScriptBin "zellij-sessionizer" (builtins.readFile ../scripts/zellij-sessionizer);
-in
 lib.mkMerge [
   {
+    imports = [
+      ./scripts.nix
+    ];
+
     programs.zellij = {
       enable = lib.mkDefault true;
       enableZshIntegration = lib.mkDefault true;
@@ -13,6 +14,44 @@ lib.mkMerge [
       };
       extraConfig = ''
         keybinds {
+            normal {
+                bind "Ctrl f" {
+                    Run "zellij-sessionizer" {
+                        floating true
+                        close_on_exit true
+                        x "20%"
+                        y "20%"
+                        width "60%"
+                        height "60%"
+                    }
+                }
+            }
+            session {
+                bind "f" "s" "Ctrl f" {
+                    Run "zellij-sessionizer" {
+                        floating true
+                        close_on_exit true
+                        x "20%"
+                        y "20%"
+                        width "60%"
+                        height "60%"
+                    }
+                    SwitchToMode "Normal"
+                }
+            }
+            tmux {
+                bind "f" {
+                    Run "zellij-sessionizer" {
+                        floating true
+                        close_on_exit true
+                        x "20%"
+                        y "20%"
+                        width "60%"
+                        height "60%"
+                    }
+                    SwitchToMode "Normal"
+                }
+            }
             shared_except "locked" {
                 bind "Alt s" {
                     LaunchOrFocusPlugin "session-manager" {
@@ -20,15 +59,20 @@ lib.mkMerge [
                         move_to_focused_tab true
                     }
                 }
+                bind "Alt f" {
+                    Run "zellij-sessionizer" {
+                        floating true
+                        close_on_exit true
+                        x "20%"
+                        y "20%"
+                        width "60%"
+                        height "60%"
+                    }
+                }
             }
         }
       '';
     };
-
-    home.packages = [
-      zellij-sessionizer
-      pkgs.fzf
-    ];
 
     home.shellAliases = {
       zj = "zellij";

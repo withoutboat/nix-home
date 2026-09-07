@@ -51,6 +51,12 @@
           ];
         };
 
+        scripts = {
+          imports = [
+            ./modules/scripts.nix
+          ];
+        };
+
         shell = {
           imports = [
             ./modules/shell.nix
