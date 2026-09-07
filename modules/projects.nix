@@ -1,20 +1,29 @@
 { config, lib, pkgs, ... }:
 
 let
+  rawProjectsFile = ../secrets/projects.yml;
+  hasProjectsFile = builtins.pathExists rawProjectsFile;
+  isEncrypted = hasProjectsFile && (
+    let content = builtins.readFile rawProjectsFile;
+    in lib.hasInfix "sops:" content || lib.hasInfix "ENC[" content
+  );
   projectsFile =
-    if config ? sops && config.sops.secrets ? "projects.yml"
+    if isEncrypted && config ? sops && config.sops.secrets ? "projects.yml"
     then config.sops.secrets."projects.yml".path
-    else ../secrets/projects.yml;
+    else rawProjectsFile;
 in
 {
-  sops.secrets."projects.yml" = {
-    sopsFile = ../secrets/projects.yml;
+  sops = lib.mkIf isEncrypted {
+    secrets."projects.yml" = {
+      sopsFile = rawProjectsFile;
+      format = "binary";
+    };
   };
 
   home.activation.cloneProjects = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     PROJECTS_FILE="${projectsFile}"
-    if [ ! -f "$PROJECTS_FILE" ] && [ -f "${../secrets/projects.yml}" ]; then
-      PROJECTS_FILE="${../secrets/projects.yml}"
+    if [ ! -f "$PROJECTS_FILE" ] && [ -f "${rawProjectsFile}" ]; then
+      PROJECTS_FILE="${rawProjectsFile}"
     fi
 
     if [ -f "$PROJECTS_FILE" ]; then

@@ -10,13 +10,16 @@
     nix-ks3-infra.inputs.nixpkgs.follows = "nixpkgs";
     nix-neovim.url = "github:withoutboat/nix-neovim";
     nix-neovim.inputs.nixpkgs.follows = "nixpkgs";
+    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { nix-hyprland, nix-ks3-infra, nix-neovim, ... }:
+  outputs = { nix-hyprland, nix-ks3-infra, nix-neovim, sops-nix, ... }:
     {
       homeModules = {
         default = { pkgs, username, ... }: {
           imports = [
+            sops-nix.homeManagerModules.sops
             nix-hyprland.homeManagerModules.default
             nix-ks3-infra.homeManagerModules.default
             nix-neovim.homeManagerModules.default
@@ -67,6 +70,13 @@
         shell = {
           imports = [
             ./modules/shell.nix
+          ];
+        };
+
+        sops = {
+          imports = [
+            sops-nix.homeManagerModules.sops
+            ./modules/sops.nix
           ];
         };
 
