@@ -1,7 +1,8 @@
-{ config, lib, options, ... }:
+{ config, lib, ... }:
 
 let
-  hasSops = options ? sops;
+  copilotSecretFile = ../secrets/copilot.json;
+  hasCopilotSecret = builtins.pathExists copilotSecretFile;
 in
 {
   programs.nixvim = {
@@ -23,9 +24,11 @@ in
 
   # GitHub Copilot declarative authentication
   # Copilot reads authentication credentials from ~/.config/github-copilot/hosts.json
-  sops = lib.mkIf hasSops {
-    secrets."copilot/hosts.json" = lib.mkDefault {
+  sops = lib.mkIf hasCopilotSecret {
+    secrets."copilot/hosts.json" = {
+      sopsFile = copilotSecretFile;
       path = "${config.xdg.configHome}/github-copilot/hosts.json";
+      format = "binary";
     };
   };
 }
