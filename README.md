@@ -80,16 +80,22 @@ Projects and their repositories are declared in `secrets/projects.yml`:
     - git@wb:project_name.git
 ```
 
-### SOPS Secrets Integration (`modules/sops.nix`)
+### SOPS Secrets Integration
 
-All secret configuration is isolated in `modules/sops.nix`, declaring `sops.secrets."projects.yml"`.
+`sops.secrets."projects.yml"` is declared directly in `modules/projects.nix`:
+```nix
+sops.secrets."projects.yml" = {
+  sopsFile = ../secrets/projects.yml;
+};
+```
 When encrypted with SOPS (`sops -e -i secrets/projects.yml`), `sops-nix` decrypts the file at runtime and `projects.nix` reads the decrypted path from `config.sops.secrets."projects.yml".path`.
 
 ### How it works
 
 1. Standard Home Manager activation hook (`home.activation.cloneProjects`) runs on `home-manager switch`.
-2. For each declared project (e.g. `personal`, `work`), creates the folder in `$HOME/` (if it doesn't already exist).
-3. Clones any missing repository via `git clone`.
-4. Repositories that are already cloned are safely skipped without errors.
+2. Reads YAML as structured data (array of project entries) via Python/PyYAML.
+3. For each declared project (e.g. `personal`, `work`), creates the folder in `$HOME/` (if it doesn't already exist).
+4. Clones any missing repository via `git clone`.
+5. Repositories that are already cloned are safely skipped without errors.
 
 

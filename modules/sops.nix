@@ -5,8 +5,5 @@
 
   sops = lib.mkIf (options ? sops) {
     age.keyFile = lib.mkDefault "${config.home.homeDirectory}/.config/sops/age/keys.txt";
-    secrets."projects.yml" = {
-      sopsFile = ../secrets/projects.yml;
-    };
   };
 }

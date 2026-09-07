@@ -7,6 +7,10 @@ let
     else ../secrets/projects.yml;
 in
 {
+  sops.secrets."projects.yml" = {
+    sopsFile = ../secrets/projects.yml;
+  };
+
   home.activation.cloneProjects = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     PROJECTS_FILE="${projectsFile}"
     if [ ! -f "$PROJECTS_FILE" ] && [ -f "${../secrets/projects.yml}" ]; then
@@ -14,38 +18,37 @@ in
     fi
 
     if [ -f "$PROJECTS_FILE" ]; then
-      ${pkgs.gawk}/bin/awk '
-        /^[[:space:]]*-[[:space:]]*(git@|https?:\/\/)/ {
-          sub(/^[[:space:]]*-[[:space:]]*/, "")
-          repo = $0
-          sub(/\.git$/, "", repo)
-          n = split(repo, a, /[:\/]/)
-          reponame = a[n]
-          if (proj != "") {
-            print "CLONE", $0, proj "/" reponame
-          }
-          next
-        }
-        /^[[:space:]]*-?[[:space:]]*[a-zA-Z0-9_.-]+:?[[:space:]]*$/ {
-          p = $0
-          sub(/^[[:space:]]*-?[[:space:]]*/, "", p)
-          sub(/:[[:space:]]*$/, "", p)
-          if (p != "") {
-            proj = p
-            print "DIR", proj
-          }
-        }
-      ' "$PROJECTS_FILE" | while read -r action arg1 arg2; do
-        if [ "$action" = "DIR" ]; then
-          mkdir -p "$HOME/$arg1"
-        elif [ "$action" = "CLONE" ]; then
-          TARGET="$HOME/$arg2"
-          if [ ! -d "$TARGET/.git" ] && [ ! -d "$TARGET" ]; then
-            echo "Cloning $arg1 into $TARGET..."
-            ${pkgs.git}/bin/git clone "$arg1" "$TARGET" || true
-          fi
-        fi
-      done
+      ${pkgs.python3.withPackages (ps: [ ps.pyyaml ])}/bin/python3 -c '
+import os, sys, yaml, subprocess
+from pathlib import Path
+
+projects_file = sys.argv[1]
+with open(projects_file) as f:
+    items = yaml.safe_load(f) or []
+
+home = Path.home()
+
+for item in items:
+    if isinstance(item, dict):
+        for proj, repos in item.items():
+            proj_dir = home / proj
+            proj_dir.mkdir(parents=True, exist_ok=True)
+            for repo in (repos or []):
+                name = repo.rstrip("/").rsplit("/", 1)[-1].rsplit(":", 1)[-1].removesuffix(".git")
+                target = proj_dir / name
+                if not target.exists():
+                    subprocess.run(["${pkgs.git}/bin/git", "clone", repo, str(target)])
+    elif isinstance(item, list) and len(item) >= 2:
+        proj = item[0]
+        repos = item[1] if isinstance(item[1], list) else item[1:]
+        proj_dir = home / proj
+        proj_dir.mkdir(parents=True, exist_ok=True)
+        for repo in repos:
+            name = repo.rstrip("/").rsplit("/", 1)[-1].rsplit(":", 1)[-1].removesuffix(".git")
+            target = proj_dir / name
+            if not target.exists():
+                subprocess.run(["${pkgs.git}/bin/git", "clone", repo, str(target)])
+' "$PROJECTS_FILE"
     fi
   '';
 }
