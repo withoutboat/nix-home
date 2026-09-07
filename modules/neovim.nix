@@ -1,5 +1,8 @@
-{ lib, ... }:
+{ config, lib, options, ... }:
 
+let
+  hasSops = options ? sops;
+in
 {
   programs.nixvim = {
     enable = lib.mkDefault true;
@@ -16,5 +19,13 @@
   home.shellAliases = {
     v = "nvim";
     vim = "nvim";
+  };
+
+  # GitHub Copilot declarative authentication
+  # Copilot reads authentication credentials from ~/.config/github-copilot/hosts.json
+  sops = lib.mkIf hasSops {
+    secrets."copilot/hosts.json" = lib.mkDefault {
+      path = "${config.xdg.configHome}/github-copilot/hosts.json";
+    };
   };
 }
