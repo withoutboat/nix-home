@@ -67,9 +67,9 @@ Zellij, Starship, and Nushell are configured with automatic **Stylix** theming:
 - Palettes are dynamically generated from base16 schemes (e.g. Catppuccin Mocha / Catppuccin Latte).
 - Automatically updates with `theme-set light` / `theme-set dark` and scheduled system timers.
 
-## Project Management (`projects-sync` / `psync`)
+## Project Management (`projects` module)
 
-The `projects` module automates provisioning workspace folders and cloning work and personal repositories:
+The `projects` module declaratively ensures project directories exist in `$HOME/` and clones work/personal repositories on Home Manager activation:
 
 ### Configuration (`secrets/projects.yml`)
 
@@ -80,13 +80,16 @@ Projects and their repositories are declared in `secrets/projects.yml`:
     - git@wb:project_name.git
 ```
 
-This file can later be encrypted with `sops` (e.g. `sops -e -i secrets/projects.yml`). `projects-sync` automatically decrypts SOPS-encrypted files at runtime when `sops` and age identities are present.
+### SOPS Secrets Integration (`modules/sops.nix`)
+
+All secret configuration is isolated in `modules/sops.nix`, declaring `sops.secrets."projects.yml"`.
+When encrypted with SOPS (`sops -e -i secrets/projects.yml`), `sops-nix` decrypts the file at runtime and `projects.nix` reads the decrypted path from `config.sops.secrets."projects.yml".path`.
 
 ### How it works
 
-1. For each declared project (e.g. `work`, `personal`, `project_name`), a corresponding directory is created under `$HOME/` (e.g. `~/project_name`).
-2. All repositories listed under the project are cloned into `$HOME/<project_name>/<repo_name>`.
-3. Already cloned repositories are skipped safely without error.
-4. Synchronizes automatically during Home Manager activation and can be run manually via `projects-sync` (or alias `psync`).
+1. Standard Home Manager activation hook (`home.activation.cloneProjects`) runs on `home-manager switch`.
+2. For each declared project (e.g. `personal`, `work`), creates the folder in `$HOME/` (if it doesn't already exist).
+3. Clones any missing repository via `git clone`.
+4. Repositories that are already cloned are safely skipped without errors.
 
 
