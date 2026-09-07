@@ -4,35 +4,49 @@ set -euo pipefail
 if [[ $# -eq 1 ]]; then
     selected="$1"
 else
+    standalone_dirs=(
+        "$HOME/.dotfiles"
+        "$HOME/dotfiles"
+    )
+
+    search_roots=(
+        "$HOME/hiplabs"
+        "$HOME/hiplabs/baseella"
+        "$HOME/hiplabs/matb"
+        "$HOME/hiplabs/zp"
+        "$HOME/personal"
+        "$HOME/personal/infra"
+    )
+
     search_dirs=()
-    for dir in \
-        "$HOME" \
-        "$HOME/hiplabs" \
-        "$HOME/hiplabs/matb" \
-        "$HOME/hiplabs/zp" \
-        "$HOME/hiplabs/baseella" \
-        "$HOME/personal" \
-        "$HOME/personal/infra" \
-        "$HOME/.dotfiles" \
-        "$HOME/.dotfiles/bin/.local/bin" \
-        "$HOME/nix-core" \
-        "$HOME/nix-home"; do
+    for dir in "${search_roots[@]}"; do
         if [[ -d "$dir" ]]; then
             search_dirs+=("$dir")
         fi
     done
 
-    if [[ ${#search_dirs[@]} -eq 0 ]]; then
-        search_dirs=("$HOME")
-    fi
+    existing_standalone=()
+    for dir in "${standalone_dirs[@]}"; do
+        if [[ -d "$dir" ]]; then
+            existing_standalone+=("$dir")
+        fi
+    done
 
-    selected=$(find "${search_dirs[@]}" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | fzf --prompt="Select project > ")
+    selected=$({
+        if [[ ${#existing_standalone[@]} -gt 0 ]]; then
+            printf '%s\n' "${existing_standalone[@]}"
+        fi
+        if [[ ${#search_dirs[@]} -gt 0 ]]; then
+            find "${search_dirs[@]}" -mindepth 1 -maxdepth 1 -type d ! -name ".*" 2>/dev/null
+        fi
+    } | sort -u | fzf --prompt="Select project > " || true)
 fi
 
 if [[ -z "${selected:-}" ]]; then
     exit 0
 fi
 
+selected=$(cd "$selected" 2>/dev/null && pwd || echo "$selected")
 selected_name=$(basename "$selected" | tr . _)
 
 if [[ -z "${ZELLIJ:-}" ]]; then
@@ -40,6 +54,11 @@ if [[ -z "${ZELLIJ:-}" ]]; then
     cd "$selected"
     exec zellij attach -c "$selected_name"
 else
-    # Inside Zellij: open a new tab in the current session rooted in the selected directory
-    zellij action new-tab --cwd "$selected" --name "$selected_name"
+    # Inside Zellij:
+    # If a tab for this project already exists, switch to it; otherwise open a new tab
+    if zellij action query-tab-names 2>/dev/null | grep -Fxq "$selected_name"; then
+        zellij action go-to-tab-name "$selected_name"
+    else
+        zellij action new-tab --cwd "$selected" --name "$selected_name"
+    fi
 fi

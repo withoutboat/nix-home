@@ -1,12 +1,18 @@
 { pkgs, ... }:
 let
+  zellij-sessionizer = pkgs.writeShellScriptBin "zellij-sessionizer" ''
+    export PATH="${pkgs.lib.makeBinPath [ pkgs.findutils pkgs.coreutils pkgs.fzf pkgs.zellij ]}:$PATH"
+    exec ${pkgs.bash}/bin/bash ${../scripts/zellij-sessionizer} "$@"
+  '';
   theme-set = pkgs.writeShellScriptBin "theme-set" (builtins.readFile ../scripts/theme-set);
   theme-toggle = pkgs.writeShellScriptBin "theme-toggle" (builtins.readFile ../scripts/theme-toggle);
 in
 {
   home.packages = [
+    zellij-sessionizer
     theme-set
     theme-toggle
+    pkgs.fzf
   ];
 
   systemd.user.services = {
