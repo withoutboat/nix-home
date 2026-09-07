@@ -93,7 +93,7 @@ When encrypted with SOPS (`sops -e -i secrets/projects.yml`), `sops-nix` decrypt
 ### How it works
 
 1. Standard Home Manager activation hook (`home.activation.cloneProjects`) runs on `home-manager switch`.
-2. Reads YAML as structured data (array of project entries) via Python/PyYAML.
+2. Evaluates declared projects in `zsh` directly within the activation hook.
 3. For each declared project (e.g. `personal`, `work`), creates the folder in `$HOME/` (if it doesn't already exist).
 4. Clones any missing repository via `git clone`.
 5. Repositories that are already cloned are safely skipped without errors.

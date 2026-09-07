@@ -18,37 +18,39 @@ in
     fi
 
     if [ -f "$PROJECTS_FILE" ]; then
-      ${pkgs.python3.withPackages (ps: [ ps.pyyaml ])}/bin/python3 -c '
-import os, sys, yaml, subprocess
-from pathlib import Path
+      ${pkgs.zsh}/bin/zsh -c '
+        projects_file="$1"
+        current_project=""
 
-projects_file = sys.argv[1]
-with open(projects_file) as f:
-    items = yaml.safe_load(f) or []
+        while IFS= read -r line || [[ -n "$line" ]]; do
+          trimmed="''${line#"''${line%%[![:space:]]*}"}"
+          trimmed="''${trimmed%"''${trimmed##*[![:space:]]}"}"
 
-home = Path.home()
+          [[ -z "$trimmed" || "$trimmed" == \#* ]] && continue
 
-for item in items:
-    if isinstance(item, dict):
-        for proj, repos in item.items():
-            proj_dir = home / proj
-            proj_dir.mkdir(parents=True, exist_ok=True)
-            for repo in (repos or []):
-                name = repo.rstrip("/").rsplit("/", 1)[-1].rsplit(":", 1)[-1].removesuffix(".git")
-                target = proj_dir / name
-                if not target.exists():
-                    subprocess.run(["${pkgs.git}/bin/git", "clone", repo, str(target)])
-    elif isinstance(item, list) and len(item) >= 2:
-        proj = item[0]
-        repos = item[1] if isinstance(item[1], list) else item[1:]
-        proj_dir = home / proj
-        proj_dir.mkdir(parents=True, exist_ok=True)
-        for repo in repos:
-            name = repo.rstrip("/").rsplit("/", 1)[-1].rsplit(":", 1)[-1].removesuffix(".git")
-            target = proj_dir / name
-            if not target.exists():
-                subprocess.run(["${pkgs.git}/bin/git", "clone", repo, str(target)])
-' "$PROJECTS_FILE"
+          if [[ "$trimmed" =~ ^-\ +([^[:space:]]+)$ ]]; then
+            val="''${match[1]}"
+            if [[ "$val" == *@* || "$val" == http* || "$val" == ssh://* || "$val" == *.git ]]; then
+              repo="$val"
+              repo_name="''${repo##*/}"
+              repo_name="''${repo_name##*:}"
+              repo_name="''${repo_name%.git}"
+              target="$HOME/$current_project/$repo_name"
+
+              if [[ ! -d "$target/.git" && ! -d "$target" ]]; then
+                echo "Cloning $repo -> $target"
+                ${pkgs.git}/bin/git clone "$repo" "$target" || true
+              fi
+              continue
+            fi
+          fi
+
+          if [[ "$trimmed" =~ ^-?\ *([a-zA-Z0-9_.-]+):?$ ]]; then
+            current_project="''${match[1]}"
+            mkdir -p "$HOME/$current_project"
+          fi
+        done < "$projects_file"
+      ' zsh "$PROJECTS_FILE"
     fi
   '';
 }
