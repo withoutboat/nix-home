@@ -6,7 +6,7 @@
 - `homeModules.neovim` — standalone Neovim configuration powered by NixVim (`withoutboat/nix-neovim`) with default editor settings and `v` / `vim` aliases
 - `homeModules.ks3` — standalone minimal K3s rootless service and Kubernetes tooling module (`programs.k3s-infra` / `services.k3s-infra`)
 - `homeModules.projects` — project and repository manager automating work/personal workspace cloning based on `secrets/projects.yml`
-- `homeModules.scripts` — custom scripts module exporting `zellij-sessionizer`, `projects-clone`, `theme-set`, and `theme-toggle`
+- `homeModules.scripts` — custom scripts module exporting `zellij-sessionizer`, `theme-set`, and `theme-toggle`
 - `homeModules.shell` — shell configuration with Zsh, Nushell, Starship prompt, and Stylix theme integration
 - `homeModules.zellij` — Zellij terminal workspace and session manager with Nushell default shell, centered floating sessionizer popup, and Stylix theming
 
@@ -92,8 +92,8 @@ When encrypted with SOPS (`sops -e -i secrets/projects.yml`), `sops-nix` decrypt
 
 ### How it works
 
-1. Standard Home Manager activation hook (`home.activation.cloneProjects`) runs `projects-clone` on `home-manager switch`.
-2. Written in pure `zsh` and packaged via `modules/scripts.nix` (available as CLI command `projects-clone`).
+1. Standard Home Manager activation hook (`home.activation.cloneProjects`) runs on `home-manager switch`.
+2. Evaluates declared projects in `zsh` directly within the activation hook.
 3. For each declared project (e.g. `personal`, `work`), creates the folder in `$HOME/` (if it doesn't already exist).
 4. Clones any missing repository via `git clone`.
 5. Repositories that are already cloned are safely skipped without errors.
