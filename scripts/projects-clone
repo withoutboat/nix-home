@@ -1,0 +1,58 @@
+#!/usr/bin/env zsh
+set -eu
+
+projects_file="${1:-}"
+
+if [[ -z "$projects_file" ]]; then
+  if [[ -n "${PROJECTS_FILE:-}" && -f "$PROJECTS_FILE" ]]; then
+    projects_file="$PROJECTS_FILE"
+  elif [[ -f "/run/user/$UID/secrets/projects.yml" ]]; then
+    projects_file="/run/user/$UID/secrets/projects.yml"
+  elif [[ -f "$HOME/.config/sops-nix/secrets/projects.yml" ]]; then
+    projects_file="$HOME/.config/sops-nix/secrets/projects.yml"
+  elif [[ -f "$HOME/nix-home/secrets/projects.yml" ]]; then
+    projects_file="$HOME/nix-home/secrets/projects.yml"
+  elif [[ -f "$HOME/personal/nix-home/secrets/projects.yml" ]]; then
+    projects_file="$HOME/personal/nix-home/secrets/projects.yml"
+  fi
+fi
+
+if [[ -z "$projects_file" || ! -f "$projects_file" ]]; then
+  exit 0
+fi
+
+current_project=""
+
+while IFS= read -r line || [[ -n "$line" ]]; do
+  # Trim whitespace
+  trimmed="${line#"${line%%[![:space:]]*}"}"
+  trimmed="${trimmed%"${trimmed##*[![:space:]]}"}"
+
+  [[ -z "$trimmed" || "$trimmed" == \#* ]] && continue
+
+  # Match repository entry: "- git@...", "- https://...", etc.
+  if [[ "$trimmed" =~ ^-\ +([^[:space:]]+)$ ]]; then
+    val="${match[1]}"
+    if [[ "$val" == *@* || "$val" == http* || "$val" == ssh://* || "$val" == *.git ]]; then
+      repo="$val"
+      repo_name="${repo##*/}"
+      repo_name="${repo_name##*:}"
+      repo_name="${repo_name%.git}"
+      target="$HOME/$current_project/$repo_name"
+
+      if [[ -d "$target/.git" || -d "$target" ]]; then
+        continue
+      fi
+
+      echo "Cloning $repo -> $target"
+      git clone "$repo" "$target" || true
+      continue
+    fi
+  fi
+
+  # Match project header: "- name:" or "- name" or "name:"
+  if [[ "$trimmed" =~ ^-?\ *([a-zA-Z0-9_.-]+):?$ ]]; then
+    current_project="${match[1]}"
+    mkdir -p "$HOME/$current_project"
+  fi
+done < "$projects_file"

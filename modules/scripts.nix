@@ -4,12 +4,17 @@ let
     export PATH="${pkgs.lib.makeBinPath [ pkgs.findutils pkgs.coreutils pkgs.fzf pkgs.zellij ]}:$PATH"
     exec ${pkgs.bash}/bin/bash ${../scripts/zellij-sessionizer} "$@"
   '';
+  projects-clone = pkgs.writeShellScriptBin "projects-clone" ''
+    export PATH="${pkgs.lib.makeBinPath [ pkgs.git pkgs.coreutils pkgs.zsh ]}:$PATH"
+    exec ${pkgs.zsh}/bin/zsh ${../scripts/projects-clone} "$@"
+  '';
   theme-set = pkgs.writeShellScriptBin "theme-set" (builtins.readFile ../scripts/theme-set);
   theme-toggle = pkgs.writeShellScriptBin "theme-toggle" (builtins.readFile ../scripts/theme-toggle);
 in
 {
   home.packages = [
     zellij-sessionizer
+    projects-clone
     theme-set
     theme-toggle
     pkgs.fzf
