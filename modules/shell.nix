@@ -7,7 +7,7 @@ lib.mkMerge [
       enableCompletion = lib.mkDefault true;
       autosuggestion.enable = lib.mkDefault true;
       syntaxHighlighting.enable = lib.mkDefault true;
-      initExtra = ''
+      initContent = ''
         bindkey -s '^f' 'zellij-sessionizer\n'
       '';
     };
@@ -20,6 +20,9 @@ lib.mkMerge [
       enable = lib.mkDefault true;
       enableZshIntegration = lib.mkDefault true;
       enableNushellIntegration = lib.mkDefault true;
+      settings = {
+        command_timeout = 2000;
+      };
     };
   }
   (lib.optionalAttrs (options ? stylix) {
