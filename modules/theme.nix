@@ -40,7 +40,7 @@ in
     base16Scheme = darkTheme.base16Scheme;
     image = darkTheme.image;
     targets.hyprpaper.enable = lib.mkIf hasVideo (lib.mkDefault false);
-    targets.swaybg.enable = lib.mkIf hasVideo (lib.mkDefault false);
+    targets.sway.enable = lib.mkIf hasVideo (lib.mkDefault false);
   };
 
   specialisation.light.configuration = lib.mkIf (lightTheme != null) {
@@ -49,7 +49,7 @@ in
       base16Scheme = lib.mkForce lightTheme.base16Scheme;
       image = lib.mkForce lightTheme.image;
       targets.hyprpaper.enable = lib.mkIf hasVideo (lib.mkForce false);
-      targets.swaybg.enable = lib.mkIf hasVideo (lib.mkForce false);
+      targets.sway.enable = lib.mkIf hasVideo (lib.mkForce false);
     };
 
     systemd.user.services.mpvpaper = lib.mkIf (lightTheme ? video) {
