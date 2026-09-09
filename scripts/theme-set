@@ -25,6 +25,10 @@ case "$THEME" in
       gsettings set org.gnome.desktop.interface color-scheme 'prefer-light' || true
     fi
 
+    if command -v systemctl >/dev/null 2>&1; then
+      systemctl --user restart mpvpaper 2>/dev/null || true
+    fi
+
     echo "light" > "$STATE_FILE"
     if command -v notify-send >/dev/null 2>&1; then
       notify-send "Theme" "Switched to light"
@@ -47,6 +51,10 @@ case "$THEME" in
 
     if command -v gsettings >/dev/null 2>&1; then
       gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' || true
+    fi
+
+    if command -v systemctl >/dev/null 2>&1; then
+      systemctl --user restart mpvpaper 2>/dev/null || true
     fi
 
     echo "dark" > "$STATE_FILE"
