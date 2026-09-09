@@ -11,6 +11,10 @@ case "$THEME" in
     echo "Switching to light theme..."
     if [ -x "/run/current-system/specialisation/light/bin/switch-to-configuration" ]; then
       sudo /run/current-system/specialisation/light/bin/switch-to-configuration test
+    elif [ -x "$HOME/.nix-profile/specialisation/light/activate" ]; then
+      "$HOME/.nix-profile/specialisation/light/activate"
+    elif [ -x "${XDG_STATE_HOME:-$HOME/.local/state}/nix/profiles/home-manager/specialisation/light/activate" ]; then
+      "${XDG_STATE_HOME:-$HOME/.local/state}/nix/profiles/home-manager/specialisation/light/activate"
     else
       echo "Warning: /run/current-system/specialisation/light/bin/switch-to-configuration not found" >&2
     fi
@@ -29,6 +33,10 @@ case "$THEME" in
     echo "Switching to dark theme..."
     if [ -x "/run/current-system/bin/switch-to-configuration" ]; then
       sudo /run/current-system/bin/switch-to-configuration test
+    elif [ -x "$HOME/.nix-profile/activate" ]; then
+      "$HOME/.nix-profile/activate"
+    elif [ -x "${XDG_STATE_HOME:-$HOME/.local/state}/nix/profiles/home-manager/activate" ]; then
+      "${XDG_STATE_HOME:-$HOME/.local/state}/nix/profiles/home-manager/activate"
     else
       echo "Warning: /run/current-system/bin/switch-to-configuration not found" >&2
     fi
