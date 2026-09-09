@@ -9,11 +9,43 @@ lib.mkMerge [
       syntaxHighlighting.enable = lib.mkDefault true;
       initExtra = ''
         bindkey -s '^f' 'zellij-sessionizer\n'
+
+        # Vi mode
+        bindkey -v
+        export KEYTIMEOUT=1
+
+        # Edit current command line in Neovim
+        autoload -Uz edit-command-line
+        zle -N edit-command-line
+        bindkey '^[e' edit-command-line
+        bindkey -M vicmd '^[e' edit-command-line
+        bindkey -M vicmd 'v' edit-command-line
       '';
     };
 
     programs.nushell = {
       enable = lib.mkDefault true;
+      extraConfig = ''
+        $env.config = ($env.config? | default {})
+        $env.config.edit_mode = "vi"
+        $env.config.buffer_editor = "nvim"
+        $env.config.keybindings = ($env.config | get -i keybindings | default [] | append [
+          {
+            name: open_editor_alt_e
+            modifier: alt
+            keycode: char_e
+            mode: [emacs, vi_normal, vi_insert]
+            event: { send: OpenEditor }
+          }
+          {
+            name: open_editor_v
+            modifier: none
+            keycode: char_v
+            mode: vi_normal
+            event: { send: OpenEditor }
+          }
+        ])
+      '';
     };
 
     programs.starship = {
