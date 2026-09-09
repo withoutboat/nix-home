@@ -9,6 +9,7 @@
 - `homeModules.config` — user configuration options module (`lightTheme`, `darkTheme`)
 - `homeModules.scripts` — custom scripts module exporting `zellij-sessionizer`, `theme-set`, and `theme-toggle`
 - `homeModules.shell` — shell configuration with Zsh, Nushell, Starship prompt, and Stylix theme integration
+- `homeModules.stylix` — standalone Stylix Home Manager module (only needed if Stylix is not enabled at the NixOS system level)
 - `homeModules.theme` — per-user Stylix theming module applying user-configured themes from the catalog (or falling back to system defaults)
 - `homeModules.zellij` — Zellij terminal workspace and session manager with Nushell default shell, centered floating sessionizer popup, and Stylix theming
 
