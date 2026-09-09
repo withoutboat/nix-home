@@ -24,8 +24,6 @@ let
       image = wallpapers.posters.camp;
       video = wallpapers.camp;
     };
-
-    tokio_night = tokyo_night;
   };
 
   darkThemeName = config.spec.darkTheme or null;
