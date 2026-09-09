@@ -18,12 +18,14 @@ let
       video = wallpapers.camp;
     };
 
-    tokio_night = {
+    tokyo_night = {
       polarity = "dark";
-      base16Scheme = "${pkgs.base16-schemes}/share/themes/tokio-night.yaml";
+      base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-night-dark.yaml";
       image = wallpapers.posters.camp;
       video = wallpapers.camp;
     };
+
+    tokio_night = tokyo_night;
   };
 
   darkThemeName = config.spec.darkTheme or null;
