@@ -1,4 +1,4 @@
 {
   lightTheme = "solarized_light";
-  darkTheme = "default_dark";
+  darkTheme = "tokio_night";
 }

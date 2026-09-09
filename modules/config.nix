@@ -1,16 +1,8 @@
-{ config, lib, username ? null, ... }:
+{ config, lib, ... }:
 
 let
-  user =
-    if username != null && username != "" then
-      username
-    else if config ? home && config.home ? username && config.home.username != null && config.home.username != "" then
-      config.home.username
-    else
-      "";
-
-  userConfigFile = ../configs + "/${user}.nix";
-  hasUserConfig = user != "" && builtins.pathExists userConfigFile;
+  userConfigFile = ../configs + "/${config.home.username}.nix";
+  hasUserConfig = builtins.pathExists userConfigFile;
   raw = if hasUserConfig then import userConfigFile else { };
   userConfig = if builtins.isFunction raw then raw { inherit config lib; } else raw;
 in

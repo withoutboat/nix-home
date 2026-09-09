@@ -31,6 +31,8 @@ let
         sha256 = "1a8e42ab67483980c79674e6b614990630ec4d176691e94e25ae5e6ff2c45d88";
       };
     };
+
+    tokio_night = tokyo_night;
   };
 
   darkThemeName = config.spec.darkTheme or null;
