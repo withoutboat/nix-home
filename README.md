@@ -50,21 +50,43 @@ A quick project and session switcher powered by `fzf`, integrated directly into 
 - Resurrect exited sessions with their saved pane layouts and command history.
 - Create new isolated sessions and rename current sessions.
 
-### 3. Essential Zellij Keybindings
+### 3. Modal Architecture & Essential Keybindings
 
-- **`Ctrl+o` → `d`**: detach from the current session (leaves processes running in background).
-- **`Ctrl+o` → `f` / `s`** or **`Ctrl+f`**: open centered floating sessionizer.
-- **`Alt+s`**: switch/select sessions via the floating session-manager.
-- **`Ctrl+t` → `n`**: create a new tab.
-- **`Ctrl+p` → `n`**: create a new pane.
-- **`Ctrl+p` → `w`**: toggle floating mode for the current pane.
-- **`Ctrl+q`**: close current pane.
-- **`Ctrl+o` → `q`**: quit and terminate session.
+Zellij is configured with a modal system and a unified status line powered by **`zjstatus`**:
 
-### 4. Theming (Stylix)
+- **Modes**:
+  - **Normal**: default mode with direct shortcuts (`^f` sessionizer, `^p` pane, `^t` tab, `^s` scroll, `^o` session, `^g` locked, `^q` quit).
+  - **Pane (`Ctrl+p`)**: `h`/`j`/`k`/`l` (move focus), `n` (new pane), `d` (split down), `r` (split right), `x` (close), `f` (fullscreen), `w` (floating), `c` (rename).
+  - **Tab (`Ctrl+t`)**: `h`/`l` (prev/next), `1`–`9` (direct tab switch), `n` (new tab), `x` (close tab), `r` (rename), `s` (sync).
+  - **Scrollback & Search (`Ctrl+s`)**:
+    - `j` / `k`: scroll down/up line-by-line; `d` / `u`: half-page down/up.
+    - **`e` (`EditScrollback`)**: immediately dumps pane scrollback into **Neovim** (`$EDITOR`) for navigation, regex search, and block copying (`"+y`).
+    - **`/` or `s`**: enters regex search mode (`n`/`p` for next/prev, `c` case-sensitivity, `w` wrap).
+    - `q` / `Esc` / `Ctrl+c`: return to Normal mode at scroll bottom.
+  - **Session (`Ctrl+o`)**: `d` (detach), `w` (session manager), `f`/`s` (sessionizer), `q` (quit).
+
+- **Global Fast Keybindings (`shared_except "locked"`)**:
+  - **Tabs**: `Alt+1` .. `Alt+9` (jump directly to tabs 1–9), `Alt+t` (new tab).
+  - **Panes**:
+    - `Alt+h` / `Alt+j` / `Alt+k` / `Alt+l`: move focus across panes/tabs.
+    - `Alt+n`: new pane; `Alt+d`: split down; `Alt+r`: split right.
+    - `Alt+x`: close focused pane; `Alt+w`: toggle floating; `Alt+z`: toggle fullscreen.
+    - `Alt+=` / `Alt+-`: resize increase/decrease.
+  - **Layouts**: `Alt+[` / `Alt+]`: cycle swap layouts (vertical, horizontal, stacked, floating).
+  - **Sessionizer & Manager**: `Alt+f` (sessionizer popup), `Alt+s` (session manager).
+
+### 4. Layouts (`zjstatus` & Swap Layouts)
+
+Preconfigured layouts in `~/.config/zellij/layouts/`:
+- **`default`**: full layout with active mode indicator, tabs with status icons (fullscreen, sync, floating), session name, and complete swap layouts (`Alt+[` / `Alt+]`).
+- **`compact`**: streamlined single-line status bar.
+- **`dev`**: development layout with main editor pane (70% width) and vertical side stack with two terminals (30% width).
+
+### 5. Theming (Stylix & zjstatus)
 
 Zellij, Starship, and Nushell are configured with automatic **Stylix** theming:
-- Palettes are dynamically generated from base16 schemes (e.g. Catppuccin Mocha / Catppuccin Latte).
+- Colors in `zjstatus` dynamically inherit from `config.lib.stylix.colors.withHashtag` (base00–base0F), with a monochrome fallback when Stylix is inactive.
+- Zellij theme is set to `default` matching the Stylix-generated theme block.
 - Automatically updates with `theme-set light` / `theme-set dark` and scheduled system timers.
 
 ## Project Management (`projects` module)
