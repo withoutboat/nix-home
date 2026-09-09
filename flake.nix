@@ -12,114 +12,30 @@
     nix-neovim.inputs.nixpkgs.follows = "nixpkgs";
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+    stylix = {
+      url = "github:danth/stylix";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
   };
 
-  outputs = { self, nix-hyprland, nix-ks3-infra, nix-neovim, sops-nix, ... }:
+  outputs = { self, nix-hyprland, nix-ks3-infra, nix-neovim, sops-nix, stylix, ... }:
     let
-      themes = pkgs: {
-        default_dark = {
-          name = "default_dark";
-          polarity = "dark";
-          base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
-          image = pkgs.fetchurl {
-            name = "catppuccin-mocha-waves.jpg";
-            url = "https://raw.githubusercontent.com/zhichaoh/catppuccin-wallpapers/main/waves/Waves%20Dark%206016x6016.jpg";
-            sha256 = "1a8e42ab67483980c79674e6b614990630ec4d176691e94e25ae5e6ff2c45d88";
-          };
-        };
-
-        default_light = {
-          name = "default_light";
-          polarity = "light";
-          base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-latte.yaml";
-          image = pkgs.fetchurl {
-            name = "catppuccin-latte-waves.jpg";
-            url = "https://raw.githubusercontent.com/zhichaoh/catppuccin-wallpapers/main/waves/Waves%20Light%206016x6016.jpg";
-            sha256 = "6ab30f280e6c09a7e2df0df288c01b0f8a5ac1a70f3f65767a776963c9ced8ed";
-          };
-        };
-
-        solarized_light = {
-          name = "solarized_light";
-          polarity = "light";
-          base16Scheme = "${pkgs.base16-schemes}/share/themes/solarized-light.yaml";
-          image = pkgs.fetchurl {
-            name = "catppuccin-latte-waves.jpg";
-            url = "https://raw.githubusercontent.com/zhichaoh/catppuccin-wallpapers/main/waves/Waves%20Light%206016x6016.jpg";
-            sha256 = "6ab30f280e6c09a7e2df0df288c01b0f8a5ac1a70f3f65767a776963c9ced8ed";
-          };
-        };
-
-        solarized_dark = {
-          name = "solarized_dark";
-          polarity = "dark";
-          base16Scheme = "${pkgs.base16-schemes}/share/themes/solarized-dark.yaml";
-          image = pkgs.fetchurl {
-            name = "catppuccin-mocha-waves.jpg";
-            url = "https://raw.githubusercontent.com/zhichaoh/catppuccin-wallpapers/main/waves/Waves%20Dark%206016x6016.jpg";
-            sha256 = "1a8e42ab67483980c79674e6b614990630ec4d176691e94e25ae5e6ff2c45d88";
-          };
-        };
-
-        tokyo_night_dark = {
-          name = "tokyo_night_dark";
-          polarity = "dark";
-          base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-night-dark.yaml";
-          image = pkgs.fetchurl {
-            name = "catppuccin-mocha-waves.jpg";
-            url = "https://raw.githubusercontent.com/zhichaoh/catppuccin-wallpapers/main/waves/Waves%20Dark%206016x6016.jpg";
-            sha256 = "1a8e42ab67483980c79674e6b614990630ec4d176691e94e25ae5e6ff2c45d88";
-          };
-        };
-      };
-
-      normalizeThemeName = name: {
-        "solirized_light" = "solarized_light";
-        "solorized_light" = "solarized_light";
-        "solarized_light" = "solarized_light";
-        "solorized_dark" = "solarized_dark";
-        "solarized_dark" = "solarized_dark";
-        "tokio_nigth_dark" = "tokyo_night_dark";
-        "tokyo_night_dark" = "tokyo_night_dark";
-        "tokyo_night" = "tokyo_night_dark";
-        "default_dark" = "default_dark";
-        "default_light" = "default_light";
-      }.${name} or name;
-
-      getUserConfig = username:
-        let
-          userConfigFile = ./configs + "/${username}.nix";
-          rawConfig = if builtins.pathExists userConfigFile then
-            import userConfigFile
-          else
-            {
-              lightTheme = "default_light";
-              darkTheme = "default_dark";
-            };
-        in
-        {
-          lightTheme = normalizeThemeName (rawConfig.lightTheme or "default_light");
-          darkTheme = normalizeThemeName (rawConfig.darkTheme or "default_dark");
-        };
-
-      resolveTheme = pkgs: name:
-        let
-          normalized = normalizeThemeName name;
-          all = themes pkgs;
-        in
-        all.${normalized} or all.default_dark;
+      themeLib = import ./lib/themes.nix;
     in
     {
-      inherit themes getUserConfig resolveTheme normalizeThemeName;
+      inherit (themeLib) themes getUserConfig resolveTheme normalizeThemeName;
 
       homeModules = {
         default = { pkgs, username, ... }: {
           imports = [
+            stylix.homeManagerModules.stylix
             sops-nix.homeManagerModules.sops
             nix-hyprland.homeManagerModules.default
             nix-ks3-infra.homeManagerModules.default
             nix-neovim.homeManagerModules.default
             ./modules/theme-config.nix
+            ./modules/theme.nix
             ./modules/firefox.nix
             ./modules/ks3.nix
             ./modules/neovim.nix
@@ -179,6 +95,14 @@
           imports = [
             sops-nix.homeManagerModules.sops
             ./modules/sops.nix
+          ];
+        };
+
+        theme = {
+          imports = [
+            stylix.homeManagerModules.stylix
+            ./modules/theme-config.nix
+            ./modules/theme.nix
           ];
         };
 

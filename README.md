@@ -8,6 +8,7 @@
 - `homeModules.projects` — project and repository manager automating work/personal workspace cloning based on `secrets/projects.yml`
 - `homeModules.scripts` — custom scripts module exporting `zellij-sessionizer`, `theme-set`, and `theme-toggle`
 - `homeModules.shell` — shell configuration with Zsh, Nushell, Starship prompt, and Stylix theme integration
+- `homeModules.theme` — per-user Stylix theming module resolving user configs (`configs/<username>.nix`) against the theme catalog
 - `homeModules.zellij` — Zellij terminal workspace and session manager with Nushell default shell, centered floating sessionizer popup, and Stylix theming
 
 This repository is intended for reusable Home Manager configuration only.
