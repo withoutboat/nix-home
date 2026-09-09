@@ -18,14 +18,12 @@ let
       video = wallpapers.camp;
     };
 
-    tokyo_night = {
+    tokio_night = {
       polarity = "dark";
-      base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-night-dark.yaml";
+      base16Scheme = "${pkgs.base16-schemes}/share/themes/tokio-night.yaml";
       image = wallpapers.posters.camp;
       video = wallpapers.camp;
     };
-
-    tokio_night = tokyo_night;
   };
 
   darkThemeName = config.spec.darkTheme or null;
@@ -42,7 +40,7 @@ in
     base16Scheme = darkTheme.base16Scheme;
     image = darkTheme.image;
     targets.hyprpaper.enable = lib.mkIf hasVideo (lib.mkDefault false);
-    targets.swaybg.enable = lib.mkIf hasVideo (lib.mkDefault false);
+    targets.sway.enable = lib.mkIf hasVideo (lib.mkDefault false);
   };
 
   specialisation.light.configuration = lib.mkIf (lightTheme != null) {
@@ -51,7 +49,7 @@ in
       base16Scheme = lib.mkForce lightTheme.base16Scheme;
       image = lib.mkForce lightTheme.image;
       targets.hyprpaper.enable = lib.mkIf hasVideo (lib.mkForce false);
-      targets.swaybg.enable = lib.mkIf hasVideo (lib.mkForce false);
+      targets.sway.enable = lib.mkIf hasVideo (lib.mkForce false);
     };
 
     systemd.user.services.mpvpaper = lib.mkIf (lightTheme ? video) {
