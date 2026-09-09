@@ -24,7 +24,7 @@
       homeModules = {
         default = { pkgs, username, ... }: {
           imports = [
-            stylix.homeManagerModules.stylix
+            stylix.homeModules.stylix
             sops-nix.homeManagerModules.sops
             nix-hyprland.homeManagerModules.default
             nix-ks3-infra.homeManagerModules.default
