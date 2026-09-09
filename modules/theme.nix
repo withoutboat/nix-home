@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, options, pkgs, ... }:
 
 let
   wallpapers = import ../wallpapers { inherit pkgs; };
@@ -35,7 +35,7 @@ let
   hasVideo = (darkTheme != null && darkTheme ? video) || (lightTheme != null && lightTheme ? video);
 in
 {
-  stylix = lib.mkIf (darkTheme != null) {
+  stylix = lib.mkIf (options ? stylix && darkTheme != null) {
     polarity = darkTheme.polarity;
     base16Scheme = darkTheme.base16Scheme;
     image = darkTheme.image;
@@ -44,7 +44,7 @@ in
   };
 
   specialisation.light.configuration = lib.mkIf (lightTheme != null) {
-    stylix = {
+    stylix = lib.mkIf (options ? stylix) {
       polarity = lib.mkForce lightTheme.polarity;
       base16Scheme = lib.mkForce lightTheme.base16Scheme;
       image = lib.mkForce lightTheme.image;

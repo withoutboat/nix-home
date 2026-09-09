@@ -24,7 +24,6 @@
       homeModules = {
         default = { pkgs, username, ... }: {
           imports = [
-            stylix.homeModules.stylix
             sops-nix.homeManagerModules.sops
             nix-hyprland.homeManagerModules.default
             nix-ks3-infra.homeManagerModules.default
@@ -94,9 +93,14 @@
           ];
         };
 
-        theme = {
+        stylix = {
           imports = [
             stylix.homeManagerModules.stylix
+          ];
+        };
+
+        theme = {
+          imports = [
             ./modules/config.nix
             ./modules/theme.nix
           ];
