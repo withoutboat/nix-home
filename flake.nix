@@ -20,12 +20,7 @@
   };
 
   outputs = { self, nix-hyprland, nix-ks3-infra, nix-neovim, sops-nix, stylix, ... }:
-    let
-      themeLib = import ./lib/themes.nix;
-    in
     {
-      inherit (themeLib) themes getUserConfig resolveTheme normalizeThemeName;
-
       homeModules = {
         default = { pkgs, username, ... }: {
           imports = [
@@ -34,7 +29,7 @@
             nix-hyprland.homeManagerModules.default
             nix-ks3-infra.homeManagerModules.default
             nix-neovim.homeManagerModules.default
-            ./modules/theme-config.nix
+            ./modules/config.nix
             ./modules/theme.nix
             ./modules/firefox.nix
             ./modules/ks3.nix
@@ -45,12 +40,7 @@
             ./modules/sops.nix
             ./modules/ssh.nix
             ./modules/zellij.nix
-          ] ++ (
-            let
-              userConfigFile = ./configs + "/${username}.nix";
-            in
-            if builtins.pathExists userConfigFile then [ userConfigFile ] else [ ]
-          );
+          ];
 
           home.username = username;
           home.homeDirectory = "/home/${username}";
@@ -91,6 +81,12 @@
           ];
         };
 
+        config = {
+          imports = [
+            ./modules/config.nix
+          ];
+        };
+
         sops = {
           imports = [
             sops-nix.homeManagerModules.sops
@@ -101,7 +97,7 @@
         theme = {
           imports = [
             stylix.homeManagerModules.stylix
-            ./modules/theme-config.nix
+            ./modules/config.nix
             ./modules/theme.nix
           ];
         };

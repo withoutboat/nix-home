@@ -1,42 +1,52 @@
-{ config, lib, pkgs, username ? null, ... }:
+{ config, lib, pkgs, ... }:
 
 let
-  themeLib = import ../lib/themes.nix;
+  themes = {
+    solarized_light = {
+      polarity = "light";
+      base16Scheme = "${pkgs.base16-schemes}/share/themes/solarized-light.yaml";
+      image = pkgs.fetchurl {
+        name = "catppuccin-latte-waves.jpg";
+        url = "https://raw.githubusercontent.com/zhichaoh/catppuccin-wallpapers/main/waves/Waves%20Light%206016x6016.jpg";
+        sha256 = "6ab30f280e6c09a7e2df0df288c01b0f8a5ac1a70f3f65767a776963c9ced8ed";
+      };
+    };
 
-  effectiveUsername =
-    if username != null && username != "" then
-      username
-    else if config ? home && config.home ? username && config.home.username != null && config.home.username != "" then
-      config.home.username
-    else
-      "";
+    solarized_dark = {
+      polarity = "dark";
+      base16Scheme = "${pkgs.base16-schemes}/share/themes/solarized-dark.yaml";
+      image = pkgs.fetchurl {
+        name = "catppuccin-mocha-waves.jpg";
+        url = "https://raw.githubusercontent.com/zhichaoh/catppuccin-wallpapers/main/waves/Waves%20Dark%206016x6016.jpg";
+        sha256 = "1a8e42ab67483980c79674e6b614990630ec4d176691e94e25ae5e6ff2c45d88";
+      };
+    };
 
-  userConfig = themeLib.getUserConfig effectiveUsername;
+    tokyo_night = {
+      polarity = "dark";
+      base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-night-dark.yaml";
+      image = pkgs.fetchurl {
+        name = "catppuccin-mocha-waves.jpg";
+        url = "https://raw.githubusercontent.com/zhichaoh/catppuccin-wallpapers/main/waves/Waves%20Dark%206016x6016.jpg";
+        sha256 = "1a8e42ab67483980c79674e6b614990630ec4d176691e94e25ae5e6ff2c45d88";
+      };
+    };
+  };
 
-  selectedDark =
-    if config ? darkTheme && config.darkTheme != "default_dark" then
-      config.darkTheme
-    else
-      userConfig.darkTheme;
+  darkThemeName = config.spec.darkTheme or null;
+  lightThemeName = config.spec.lightTheme or null;
 
-  selectedLight =
-    if config ? lightTheme && config.lightTheme != "default_light" then
-      config.lightTheme
-    else
-      userConfig.lightTheme;
-
-  darkTheme = themeLib.resolveTheme pkgs selectedDark;
-  lightTheme = themeLib.resolveTheme pkgs selectedLight;
+  darkTheme = if darkThemeName != null then themes.${darkThemeName} or null else null;
+  lightTheme = if lightThemeName != null then themes.${lightThemeName} or null else null;
 in
 {
-  stylix = {
-    enable = lib.mkDefault true;
+  stylix = lib.mkIf (darkTheme != null) {
     polarity = darkTheme.polarity;
     base16Scheme = darkTheme.base16Scheme;
     image = darkTheme.image;
   };
 
-  specialisation.light.configuration = {
+  specialisation.light.configuration = lib.mkIf (lightTheme != null) {
     stylix = {
       polarity = lib.mkForce lightTheme.polarity;
       base16Scheme = lib.mkForce lightTheme.base16Scheme;
