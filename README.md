@@ -6,8 +6,10 @@
 - `homeModules.neovim` — standalone Neovim configuration powered by NixVim (`withoutboat/nix-neovim`) with default editor settings and `v` / `vim` aliases
 - `homeModules.ks3` — standalone minimal K3s rootless service and Kubernetes tooling module (`programs.k3s-infra` / `services.k3s-infra`)
 - `homeModules.projects` — project and repository manager automating work/personal workspace cloning based on `secrets/projects.yml`
+- `homeModules.config` — user configuration options module (`lightTheme`, `darkTheme`)
 - `homeModules.scripts` — custom scripts module exporting `zellij-sessionizer`, `theme-set`, and `theme-toggle`
 - `homeModules.shell` — shell configuration with Zsh, Nushell, Starship prompt, and Stylix theme integration
+- `homeModules.theme` — per-user Stylix theming module applying user-configured themes from the catalog (or falling back to system defaults)
 - `homeModules.zellij` — Zellij terminal workspace and session manager with Nushell default shell, centered floating sessionizer popup, and Stylix theming
 
 This repository is intended for reusable Home Manager configuration only.

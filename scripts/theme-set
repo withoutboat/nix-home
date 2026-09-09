@@ -15,6 +15,12 @@ case "$THEME" in
       echo "Warning: /run/current-system/specialisation/light/bin/switch-to-configuration not found" >&2
     fi
 
+    if [ -x "$HOME/.local/state/nix/profiles/home-manager/specialisation/light/activate" ]; then
+      "$HOME/.local/state/nix/profiles/home-manager/specialisation/light/activate"
+    elif [ -x "$HOME/.nix-profile/specialisation/light/activate" ]; then
+      "$HOME/.nix-profile/specialisation/light/activate"
+    fi
+
     if command -v gsettings >/dev/null 2>&1; then
       gsettings set org.gnome.desktop.interface color-scheme 'prefer-light' || true
     fi
@@ -31,6 +37,12 @@ case "$THEME" in
       sudo /run/current-system/bin/switch-to-configuration test
     else
       echo "Warning: /run/current-system/bin/switch-to-configuration not found" >&2
+    fi
+
+    if [ -x "$HOME/.local/state/nix/profiles/home-manager/activate" ]; then
+      "$HOME/.local/state/nix/profiles/home-manager/activate"
+    elif [ -x "$HOME/.nix-profile/activate" ]; then
+      "$HOME/.nix-profile/activate"
     fi
 
     if command -v gsettings >/dev/null 2>&1; then

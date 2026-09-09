@@ -12,17 +12,25 @@
     nix-neovim.inputs.nixpkgs.follows = "nixpkgs";
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+    stylix = {
+      url = "github:danth/stylix";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
   };
 
-  outputs = { nix-hyprland, nix-ks3-infra, nix-neovim, sops-nix, ... }:
+  outputs = { self, nix-hyprland, nix-ks3-infra, nix-neovim, sops-nix, stylix, ... }:
     {
       homeModules = {
         default = { pkgs, username, ... }: {
           imports = [
+            stylix.homeManagerModules.stylix
             sops-nix.homeManagerModules.sops
             nix-hyprland.homeManagerModules.default
             nix-ks3-infra.homeManagerModules.default
             nix-neovim.homeManagerModules.default
+            ./modules/config.nix
+            ./modules/theme.nix
             ./modules/firefox.nix
             ./modules/ks3.nix
             ./modules/neovim.nix
@@ -73,10 +81,24 @@
           ];
         };
 
+        config = {
+          imports = [
+            ./modules/config.nix
+          ];
+        };
+
         sops = {
           imports = [
             sops-nix.homeManagerModules.sops
             ./modules/sops.nix
+          ];
+        };
+
+        theme = {
+          imports = [
+            stylix.homeManagerModules.stylix
+            ./modules/config.nix
+            ./modules/theme.nix
           ];
         };
 
