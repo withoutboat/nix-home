@@ -85,8 +85,8 @@ Preconfigured layouts in `~/.config/zellij/layouts/`:
 ### 5. Theming (Stylix & zjstatus)
 
 Zellij, Starship, and Nushell are configured with automatic **Stylix** theming:
-- Colors in `zjstatus` dynamically inherit from `config.lib.stylix.colors.withHashtag` (base00–base0F).
-- Zellij theme is set to `default` and populated with full ANSI/fg/bg palette matching Stylix.
+- Colors in `zjstatus` dynamically inherit from `config.lib.stylix.colors.withHashtag` (base00–base0F), with a monochrome fallback when Stylix is inactive.
+- Zellij theme is set to `default` matching the Stylix-generated theme block.
 - Automatically updates with `theme-set light` / `theme-set dark` and scheduled system timers.
 
 ## Project Management (`projects` module)

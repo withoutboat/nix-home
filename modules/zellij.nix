@@ -6,22 +6,22 @@ let
   colors = if hasStylix then
     config.lib.stylix.colors.withHashtag
   else {
-    base00 = "#1e1e2e";
-    base01 = "#181825";
-    base02 = "#313244";
-    base03 = "#45475a";
-    base04 = "#585b70";
-    base05 = "#cdd6f4";
-    base06 = "#f5e0dc";
-    base07 = "#b4befe";
-    base08 = "#f38ba8";
-    base09 = "#fab387";
-    base0A = "#f9e2af";
-    base0B = "#a6e3a1";
-    base0C = "#94e2d5";
-    base0D = "#89b4fa";
-    base0E = "#cba6f7";
-    base0F = "#f2cdcd";
+    base00 = "#000000";
+    base01 = "#1a1a1a";
+    base02 = "#333333";
+    base03 = "#4d4d4d";
+    base04 = "#666666";
+    base05 = "#b3b3b3";
+    base06 = "#cccccc";
+    base07 = "#ffffff";
+    base08 = "#ffffff";
+    base09 = "#e6e6e6";
+    base0A = "#cccccc";
+    base0B = "#b3b3b3";
+    base0C = "#999999";
+    base0D = "#cccccc";
+    base0E = "#b3b3b3";
+    base0F = "#808080";
   };
 
   zjstatusWasm = pkgs.fetchurl {
@@ -321,19 +321,6 @@ in
     (lib.optionalAttrs (options ? stylix) {
       stylix.targets.zellij.enable = lib.mkDefault true;
       programs.zellij.settings.theme = lib.mkDefault "default";
-      programs.zellij.themes.stylix.themes.default = with config.lib.stylix.colors.withHashtag; {
-        fg = base05;
-        bg = base00;
-        black = base01;
-        red = base08;
-        green = base0B;
-        yellow = base0A;
-        blue = base0D;
-        magenta = base0E;
-        cyan = base0C;
-        white = base06;
-        orange = base09;
-      };
     })
   ];
 }
