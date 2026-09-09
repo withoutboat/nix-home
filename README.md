@@ -8,7 +8,6 @@
 - `homeModules.projects` — project and repository manager automating work/personal workspace cloning based on `secrets/projects.yml`
 - `homeModules.scripts` — custom scripts module exporting `zellij-sessionizer`, `theme-set`, and `theme-toggle`
 - `homeModules.shell` — shell configuration with Zsh, Nushell, Starship prompt, and Stylix theme integration
-- `homeModules.stylix` (`homeModules.theme`) — single source of truth for base16 theming (Catppuccin Mocha / Latte) and `config.lib.stylix.colors` export
 - `homeModules.zellij` — Zellij terminal workspace and session manager with Nushell default shell, centered floating sessionizer popup, and Stylix theming
 
 This repository is intended for reusable Home Manager configuration only.
@@ -64,12 +63,11 @@ A quick project and session switcher powered by `fzf`, integrated directly into 
 
 ### 4. Theming (Stylix)
 
-Theming is centralized in `modules/stylix.nix` as the **single source of truth** across all applications:
-- **Base16 palettes**: Catppuccin Mocha (dark theme) and Catppuccin Latte (light theme).
-- **Color export**: Guaranteed export of `config.lib.stylix.colors` and `config.lib.stylix.colors.withHashtag` (along with `config.lib.stylix.palettes.mocha` and `latte`) so modules never duplicate color tables.
-- **Zellij**: Integrated `zjstatus` status bar with dynamic colors from `config.lib.stylix.colors` and full base16 ANSI palette mapping (`fg`, `bg`, `black`, `red`, etc.) in the Stylix `default` theme.
-- **Shell & Starship**: Nushell syntax and prompt styling, Starship base16 palette integration.
-- **Light/Dark switching**: Seamless switching via `theme-set light` / `theme-set dark` supporting both NixOS specialisations and standalone Home Manager activations.
+The system-wide Stylix theme is defined in `nix-core/modules/theme.nix` (Catppuccin Mocha / Latte) and seamlessly propagates to Home Manager:
+- **Single Source of Truth**: Colors originate from Stylix via `config.lib.stylix.colors`.
+- **Zellij**: Integrated `zjstatus` status bar with dynamic color tokens from `config.lib.stylix.colors.withHashtag` and full base16 ANSI palette mapping (`fg`, `bg`, `black`, `red`, etc.) in the Stylix `default` theme.
+- **Shell & Starship**: Nushell syntax and prompt styling, Starship integration via Stylix targets.
+- **Theme Switching**: Seamless switching via `theme-set light` / `theme-set dark` and scheduled system timers.
 
 ## Project Management (`projects` module)
 

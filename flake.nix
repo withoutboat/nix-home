@@ -31,7 +31,6 @@
             ./modules/shell.nix
             ./modules/sops.nix
             ./modules/ssh.nix
-            ./modules/stylix.nix
             ./modules/zellij.nix
           ];
 
@@ -78,18 +77,6 @@
           imports = [
             sops-nix.homeManagerModules.sops
             ./modules/sops.nix
-          ];
-        };
-
-        stylix = {
-          imports = [
-            ./modules/stylix.nix
-          ];
-        };
-
-        theme = {
-          imports = [
-            ./modules/stylix.nix
           ];
         };
 
