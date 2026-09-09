@@ -321,6 +321,23 @@ in
     (lib.optionalAttrs (options ? stylix) {
       stylix.targets.zellij.enable = lib.mkDefault true;
       programs.zellij.settings.theme = lib.mkDefault "default";
+      programs.zellij.themes.stylix.themes.default =
+        if config ? lib.stylix && config.lib.stylix ? baseColors then
+          config.lib.stylix.baseColors
+        else
+          with config.lib.stylix.colors.withHashtag; {
+            fg = base05;
+            bg = base00;
+            black = base01;
+            red = base08;
+            green = base0B;
+            yellow = base0A;
+            blue = base0D;
+            magenta = base0E;
+            cyan = base0C;
+            white = base06;
+            orange = base09;
+          };
     })
   ];
 }
