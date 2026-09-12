@@ -40,6 +40,7 @@ let
 
     buildInputs = lib.optionals pkgs.stdenv.isLinux [
       pkgs.udev
+      pkgs.stdenv.cc.cc.lib
     ];
 
     installPhase = ''
