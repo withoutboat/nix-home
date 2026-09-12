@@ -11,12 +11,26 @@ lib.mkMerge [
       enableCompletion = lib.mkDefault true;
       autosuggestion.enable = lib.mkDefault true;
       syntaxHighlighting.enable = lib.mkDefault true;
+      history = {
+        size = 100000;
+        save = 100000;
+        share = true;
+        ignoreDups = true;
+        ignoreAllDups = true;
+        ignoreSpace = true;
+      };
       initContent = ''
         bindkey -s '^f' 'zellij-sessionizer\n'
 
         # Vi mode
         bindkey -v
         export KEYTIMEOUT=1
+
+        # Fix history navigation in vi mode
+        bindkey '^[[A' up-line-or-search
+        bindkey '^[[B' down-line-or-search
+        bindkey -M vicmd 'k' up-line-or-search
+        bindkey -M vicmd 'j' down-line-or-search
 
         # Edit current command line in Neovim
         autoload -Uz edit-command-line
@@ -29,10 +43,17 @@ lib.mkMerge [
 
     programs.nushell = {
       enable = lib.mkDefault true;
+      settings = {
+        edit_mode = "vi";
+        buffer_editor = "nvim";
+        history = {
+          file_format = "sqlite";
+          max_size = 100000;
+          sync_on_enter = true;
+          isolation = false;
+        };
+      };
       extraConfig = ''
-        $env.config = ($env.config? | default {})
-        $env.config.edit_mode = "vi"
-        $env.config.buffer_editor = "nvim"
         $env.config.keybindings = ($env.config | get -o keybindings | default [] | append [
           {
             name: open_editor_alt_e
@@ -50,6 +71,20 @@ lib.mkMerge [
           }
         ])
       '';
+    };
+
+    programs.atuin = {
+      enable = lib.mkDefault true;
+      enableZshIntegration = lib.mkDefault true;
+      enableNushellIntegration = lib.mkDefault true;
+      settings = {
+        auto_sync = false;
+        sync_frequency = "1h";
+        sync_address = "https://api.atuin.sh";
+        search_mode = "fuzzy";
+        filter_mode = "global";
+        style = "compact";
+      };
     };
 
     programs.starship = {
