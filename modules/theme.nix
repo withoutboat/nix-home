@@ -37,7 +37,7 @@ in
 {
   stylix = lib.mkMerge [
     (lib.mkIf (options ? stylix) {
-      opacity.terminal = lib.mkDefault 0.8;
+      opacity.terminal = lib.mkForce 0.8;
     })
     (lib.mkIf (options ? stylix && darkTheme != null) {
       polarity = darkTheme.polarity;
