@@ -32,33 +32,35 @@ let
 
   zjstatusPlugin = ''
     plugin location="file:${config.xdg.configHome}/zellij/plugins/zjstatus.wasm" {
-        format_left   "{mode}"
-        format_center "{tabs}"
-        format_right  "#[bg=${colors.base02},fg=${colors.base0D},bold]  {session} "
-        format_space  "#[bg=${colors.base01}]"
+        format_left   "{tabs}"
+        format_center "{mode}"
+        format_right  "#[fg=${colors.base0D},bg=${colors.base00}]#[bg=${colors.base0D},fg=${colors.base00},bold]󰓩 #[bg=${colors.base02},fg=${colors.base05},bold] {session} #[fg=${colors.base02},bg=${colors.base00}]"
+        format_space  "#[bg=${colors.base00}]"
         format_hide_on_overlength "true"
         format_precedence "lrc"
 
         border_enabled  "false"
         hide_frame_for_single_pane "true"
 
-        mode_normal        "#[bg=${colors.base0D},fg=${colors.base00},bold] NORMAL #[bg=${colors.base01},fg=${colors.base05}] #[fg=${colors.base0A},bold]^p #[fg=${colors.base05}]pane #[fg=${colors.base0A},bold]^t #[fg=${colors.base05}]tab #[fg=${colors.base0A},bold]^s #[fg=${colors.base05}]scroll #[fg=${colors.base0A},bold]^o #[fg=${colors.base05}]session #[fg=${colors.base09},bold]^f #[fg=${colors.base09}]sessionizer #[fg=${colors.base0A},bold]^q #[fg=${colors.base05}]quit "
-        mode_locked        "#[bg=${colors.base08},fg=${colors.base00},bold] LOCKED #[bg=${colors.base01},fg=${colors.base05}] #[fg=${colors.base0A},bold]^g #[fg=${colors.base05}]unlock "
-        mode_pane          "#[bg=${colors.base0B},fg=${colors.base00},bold] PANE #[bg=${colors.base01},fg=${colors.base05}] #[fg=${colors.base0A},bold]h/j/k/l #[fg=${colors.base05}]move #[fg=${colors.base0A},bold]n/d/r #[fg=${colors.base05}]new/down/right #[fg=${colors.base0A},bold]x #[fg=${colors.base05}]close #[fg=${colors.base0A},bold]f #[fg=${colors.base05}]fullscreen #[fg=${colors.base0A},bold]w #[fg=${colors.base05}]floating #[fg=${colors.base0A},bold]c #[fg=${colors.base05}]rename "
-        mode_tab           "#[bg=${colors.base0D},fg=${colors.base00},bold] TAB #[bg=${colors.base01},fg=${colors.base05}] #[fg=${colors.base0A},bold]h/l #[fg=${colors.base05}]move #[fg=${colors.base0A},bold]1..9 #[fg=${colors.base05}]go #[fg=${colors.base0A},bold]n #[fg=${colors.base05}]new #[fg=${colors.base0A},bold]x #[fg=${colors.base05}]close #[fg=${colors.base0A},bold]r #[fg=${colors.base05}]rename #[fg=${colors.base0A},bold]s #[fg=${colors.base05}]sync "
-        mode_scroll        "#[bg=${colors.base0C},fg=${colors.base00},bold] SCROLL #[bg=${colors.base01},fg=${colors.base05}] #[fg=${colors.base0A},bold]j/k #[fg=${colors.base05}]scroll #[fg=${colors.base0A},bold]d/u #[fg=${colors.base05}]half-page #[fg=${colors.base09},bold]e #[fg=${colors.base09}]neovim #[fg=${colors.base0A},bold]/ or s #[fg=${colors.base05}]search #[fg=${colors.base0A},bold]q #[fg=${colors.base05}]exit "
-        mode_enter_search  "#[bg=${colors.base0E},fg=${colors.base00},bold] SEARCH #[bg=${colors.base01},fg=${colors.base05}] #[fg=${colors.base05}]enter search query "
-        mode_search        "#[bg=${colors.base0E},fg=${colors.base00},bold] SEARCH #[bg=${colors.base01},fg=${colors.base05}] #[fg=${colors.base0A},bold]n/p #[fg=${colors.base05}]next/prev #[fg=${colors.base0A},bold]c #[fg=${colors.base05}]case #[fg=${colors.base0A},bold]w #[fg=${colors.base05}]wrap #[fg=${colors.base0A},bold]q #[fg=${colors.base05}]exit "
-        mode_session       "#[bg=${colors.base09},fg=${colors.base00},bold] SESSION #[bg=${colors.base01},fg=${colors.base05}] #[fg=${colors.base0A},bold]d #[fg=${colors.base05}]detach #[fg=${colors.base0A},bold]w #[fg=${colors.base05}]manager #[fg=${colors.base09},bold]f/s #[fg=${colors.base09}]sessionizer #[fg=${colors.base0A},bold]q #[fg=${colors.base05}]quit "
-        mode_resize        "#[bg=${colors.base0A},fg=${colors.base00},bold] RESIZE #[bg=${colors.base01},fg=${colors.base05}] #[fg=${colors.base0A},bold]h/j/k/l #[fg=${colors.base05}]resize #[fg=${colors.base0A},bold]+/- #[fg=${colors.base05}]increase/decrease "
-        mode_move          "#[bg=${colors.base0A},fg=${colors.base00},bold] MOVE #[bg=${colors.base01},fg=${colors.base05}] #[fg=${colors.base0A},bold]h/j/k/l #[fg=${colors.base05}]move "
-        mode_tmux          "#[bg=${colors.base0E},fg=${colors.base00},bold] TMUX #[bg=${colors.base01},fg=${colors.base05}] #[fg=${colors.base09},bold]f #[fg=${colors.base09}]sessionizer #[fg=${colors.base0A},bold][ #[fg=${colors.base05}]scroll #[fg=${colors.base0A},bold]\"/% #[fg=${colors.base05}]split #[fg=${colors.base0A},bold]z #[fg=${colors.base05}]zoom #[fg=${colors.base0A},bold]d #[fg=${colors.base05}]detach "
+        mode_normal        "#[fg=${colors.base0D},bg=${colors.base00}]#[bg=${colors.base0D},fg=${colors.base00},bold] NORMAL #[fg=${colors.base0D},bg=${colors.base01}]#[bg=${colors.base01},fg=${colors.base05}] #[fg=${colors.base0A},bold]Alt+t #[fg=${colors.base05}]tab #[fg=${colors.base0A},bold]Alt+n #[fg=${colors.base05}]pane #[fg=${colors.base0A},bold]Alt+h/j/k/l #[fg=${colors.base05}]nav #[fg=${colors.base09},bold]Alt+f #[fg=${colors.base09}]find #[fg=${colors.base0A},bold]Alt+w #[fg=${colors.base05}]float #[fg=${colors.base0A},bold]Alt+z #[fg=${colors.base05}]zoom #[fg=${colors.base03}]| #[fg=${colors.base0A},bold]^p #[fg=${colors.base05}]pane #[fg=${colors.base0A},bold]^s #[fg=${colors.base05}]scroll #[fg=${colors.base01},bg=${colors.base00}]"
+        mode_locked        "#[fg=${colors.base08},bg=${colors.base00}]#[bg=${colors.base08},fg=${colors.base00},bold] LOCKED  #[fg=${colors.base08},bg=${colors.base01}]#[bg=${colors.base01},fg=${colors.base05}] #[fg=${colors.base0A},bold]^g #[fg=${colors.base05}]unlock #[fg=${colors.base01},bg=${colors.base00}]"
+        mode_pane          "#[fg=${colors.base0B},bg=${colors.base00}]#[bg=${colors.base0B},fg=${colors.base00},bold] PANE #[fg=${colors.base0B},bg=${colors.base01}]#[bg=${colors.base01},fg=${colors.base05}] #[fg=${colors.base0A},bold]h/j/k/l #[fg=${colors.base05}]move #[fg=${colors.base0A},bold]n/d/r #[fg=${colors.base05}]new #[fg=${colors.base0A},bold]x #[fg=${colors.base05}]close #[fg=${colors.base0A},bold]f #[fg=${colors.base05}]fullscreen #[fg=${colors.base0A},bold]w #[fg=${colors.base05}]floating #[fg=${colors.base0A},bold]c #[fg=${colors.base05}]rename #[fg=${colors.base01},bg=${colors.base00}]"
+        mode_tab           "#[fg=${colors.base0D},bg=${colors.base00}]#[bg=${colors.base0D},fg=${colors.base00},bold] TAB #[fg=${colors.base0D},bg=${colors.base01}]#[bg=${colors.base01},fg=${colors.base05}] #[fg=${colors.base0A},bold]h/l #[fg=${colors.base05}]move #[fg=${colors.base0A},bold]1..9 #[fg=${colors.base05}]go #[fg=${colors.base0A},bold]n #[fg=${colors.base05}]new #[fg=${colors.base0A},bold]x #[fg=${colors.base05}]close #[fg=${colors.base0A},bold]r #[fg=${colors.base05}]rename #[fg=${colors.base0A},bold]s #[fg=${colors.base05}]sync #[fg=${colors.base01},bg=${colors.base00}]"
+        mode_scroll        "#[fg=${colors.base0C},bg=${colors.base00}]#[bg=${colors.base0C},fg=${colors.base00},bold] SCROLL #[fg=${colors.base0C},bg=${colors.base01}]#[bg=${colors.base01},fg=${colors.base05}] #[fg=${colors.base0A},bold]j/k #[fg=${colors.base05}]scroll #[fg=${colors.base0A},bold]d/u #[fg=${colors.base05}]half #[fg=${colors.base09},bold]e #[fg=${colors.base09}]neovim #[fg=${colors.base0A},bold]/ #[fg=${colors.base05}]search #[fg=${colors.base0A},bold]q #[fg=${colors.base05}]exit #[fg=${colors.base01},bg=${colors.base00}]"
+        mode_enter_search  "#[fg=${colors.base0E},bg=${colors.base00}]#[bg=${colors.base0E},fg=${colors.base00},bold] SEARCH #[fg=${colors.base0E},bg=${colors.base01}]#[bg=${colors.base01},fg=${colors.base05}] #[fg=${colors.base05}]enter query #[fg=${colors.base01},bg=${colors.base00}]"
+        mode_search        "#[fg=${colors.base0E},bg=${colors.base00}]#[bg=${colors.base0E},fg=${colors.base00},bold] SEARCH #[fg=${colors.base0E},bg=${colors.base01}]#[bg=${colors.base01},fg=${colors.base05}] #[fg=${colors.base0A},bold]n/p #[fg=${colors.base05}]next/prev #[fg=${colors.base0A},bold]c #[fg=${colors.base05}]case #[fg=${colors.base0A},bold]w #[fg=${colors.base05}]wrap #[fg=${colors.base0A},bold]q #[fg=${colors.base05}]exit #[fg=${colors.base01},bg=${colors.base00}]"
+        mode_session       "#[fg=${colors.base09},bg=${colors.base00}]#[bg=${colors.base09},fg=${colors.base00},bold] SESSION #[fg=${colors.base09},bg=${colors.base01}]#[bg=${colors.base01},fg=${colors.base05}] #[fg=${colors.base0A},bold]d #[fg=${colors.base05}]detach #[fg=${colors.base0A},bold]w #[fg=${colors.base05}]manager #[fg=${colors.base09},bold]f/s #[fg=${colors.base09}]sessionizer #[fg=${colors.base0A},bold]q #[fg=${colors.base05}]quit #[fg=${colors.base01},bg=${colors.base00}]"
+        mode_resize        "#[fg=${colors.base0A},bg=${colors.base00}]#[bg=${colors.base0A},fg=${colors.base00},bold] RESIZE #[fg=${colors.base0A},bg=${colors.base01}]#[bg=${colors.base01},fg=${colors.base05}] #[fg=${colors.base0A},bold]h/j/k/l #[fg=${colors.base05}]resize #[fg=${colors.base0A},bold]+/- #[fg=${colors.base05}]inc/dec #[fg=${colors.base01},bg=${colors.base00}]"
+        mode_move          "#[fg=${colors.base0A},bg=${colors.base00}]#[bg=${colors.base0A},fg=${colors.base00},bold] MOVE #[fg=${colors.base0A},bg=${colors.base01}]#[bg=${colors.base01},fg=${colors.base05}] #[fg=${colors.base0A},bold]h/j/k/l #[fg=${colors.base05}]move #[fg=${colors.base01},bg=${colors.base00}]"
+        mode_tmux          "#[fg=${colors.base0E},bg=${colors.base00}]#[bg=${colors.base0E},fg=${colors.base00},bold] TMUX #[fg=${colors.base0E},bg=${colors.base01}]#[bg=${colors.base01},fg=${colors.base05}] #[fg=${colors.base09},bold]f #[fg=${colors.base09}]sessionizer #[fg=${colors.base0A},bold][ #[fg=${colors.base05}]scroll #[fg=${colors.base0A},bold]\"/% #[fg=${colors.base05}]split #[fg=${colors.base0A},bold]z #[fg=${colors.base05}]zoom #[fg=${colors.base0A},bold]d #[fg=${colors.base05}]detach #[fg=${colors.base01},bg=${colors.base00}]"
 
-        tab_normal              "#[bg=${colors.base01},fg=${colors.base04}] {index} {name} "
-        tab_active              "#[bg=${colors.base02},fg=${colors.base05},bold] {index} {name} "
-        tab_sync_indicator      "󰓦 "
-        tab_fullscreen_indicator "󰊓 "
-        tab_floating_indicator   "󰹙 "
+        tab_normal              "#[fg=${colors.base01},bg=${colors.base00}]#[bg=${colors.base01},fg=${colors.base04}]{index} #[bg=${colors.base01},fg=${colors.base05}]{name}{floating_indicator}{fullscreen_indicator}{sync_indicator}#[fg=${colors.base01},bg=${colors.base00}]"
+        tab_active              "#[fg=${colors.base0D},bg=${colors.base00}]#[bg=${colors.base0D},fg=${colors.base00},bold]{index} #[bg=${colors.base02},fg=${colors.base05},bold] {name}{floating_indicator}{fullscreen_indicator}{sync_indicator}#[fg=${colors.base02},bg=${colors.base00}]"
+        tab_separator           "#[bg=${colors.base00}] "
+
+        tab_sync_indicator       " 󰓦 "
+        tab_fullscreen_indicator " 󰊓 "
+        tab_floating_indicator   " 󰹙 "
     }
   '';
 
@@ -146,10 +148,10 @@ in
           default = ''
             layout {
                 default_tab_template {
-                    children
                     pane size=1 borderless=true {
                         ${zjstatusPlugin}
                     }
+                    children
                 }
                 ${swapLayouts}
             }
@@ -157,29 +159,31 @@ in
           compact = ''
             layout {
                 default_tab_template {
-                    children
                     pane size=1 borderless=true {
                         plugin location="file:${config.xdg.configHome}/zellij/plugins/zjstatus.wasm" {
-                            format_left   "{mode} {tabs}"
-                            format_right  "#[bg=${colors.base02},fg=${colors.base0D},bold]  {session} "
-                            format_space  "#[bg=${colors.base01}]"
+                            format_left   "{tabs}"
+                            format_center "{mode}"
+                            format_right  "#[fg=${colors.base0D},bg=${colors.base00}]#[bg=${colors.base0D},fg=${colors.base00},bold]󰓩 #[bg=${colors.base02},fg=${colors.base05},bold] {session} #[fg=${colors.base02},bg=${colors.base00}]"
+                            format_space  "#[bg=${colors.base00}]"
                             format_hide_on_overlength "true"
                             format_precedence "lrc"
                             border_enabled "false"
                             hide_frame_for_single_pane "true"
 
-                            mode_normal   "#[bg=${colors.base0D},fg=${colors.base00},bold] NORMAL "
-                            mode_locked   "#[bg=${colors.base08},fg=${colors.base00},bold] LOCKED "
-                            mode_pane     "#[bg=${colors.base0B},fg=${colors.base00},bold] PANE "
-                            mode_tab      "#[bg=${colors.base0D},fg=${colors.base00},bold] TAB "
-                            mode_scroll   "#[bg=${colors.base0C},fg=${colors.base00},bold] SCROLL "
-                            mode_session  "#[bg=${colors.base09},fg=${colors.base00},bold] SESSION "
-                            mode_search   "#[bg=${colors.base0E},fg=${colors.base00},bold] SEARCH "
+                            mode_normal   "#[fg=${colors.base0D},bg=${colors.base00}]#[bg=${colors.base0D},fg=${colors.base00},bold] NORMAL #[fg=${colors.base0D},bg=${colors.base00}]"
+                            mode_locked   "#[fg=${colors.base08},bg=${colors.base00}]#[bg=${colors.base08},fg=${colors.base00},bold] LOCKED  #[fg=${colors.base08},bg=${colors.base00}]"
+                            mode_pane     "#[fg=${colors.base0B},bg=${colors.base00}]#[bg=${colors.base0B},fg=${colors.base00},bold] PANE #[fg=${colors.base0B},bg=${colors.base00}]"
+                            mode_tab      "#[fg=${colors.base0D},bg=${colors.base00}]#[bg=${colors.base0D},fg=${colors.base00},bold] TAB #[fg=${colors.base0D},bg=${colors.base00}]"
+                            mode_scroll   "#[fg=${colors.base0C},bg=${colors.base00}]#[bg=${colors.base0C},fg=${colors.base00},bold] SCROLL #[fg=${colors.base0C},bg=${colors.base00}]"
+                            mode_session  "#[fg=${colors.base09},bg=${colors.base00}]#[bg=${colors.base09},fg=${colors.base00},bold] SESSION #[fg=${colors.base09},bg=${colors.base00}]"
+                            mode_search   "#[fg=${colors.base0E},bg=${colors.base00}]#[bg=${colors.base0E},fg=${colors.base00},bold] SEARCH #[fg=${colors.base0E},bg=${colors.base00}]"
 
-                            tab_normal    "#[bg=${colors.base01},fg=${colors.base04}] {index} {name} "
-                            tab_active    "#[bg=${colors.base02},fg=${colors.base05},bold] {index} {name} "
+                            tab_normal    "#[fg=${colors.base01},bg=${colors.base00}]#[bg=${colors.base01},fg=${colors.base04}]{index} #[bg=${colors.base01},fg=${colors.base05}]{name}#[fg=${colors.base01},bg=${colors.base00}]"
+                            tab_active    "#[fg=${colors.base0D},bg=${colors.base00}]#[bg=${colors.base0D},fg=${colors.base00},bold]{index} #[bg=${colors.base02},fg=${colors.base05},bold] {name}#[fg=${colors.base02},bg=${colors.base00}]"
+                            tab_separator "#[bg=${colors.base00}] "
                         }
                     }
+                    children
                 }
                 ${swapLayouts}
             }
@@ -187,10 +191,10 @@ in
           dev = ''
             layout {
                 default_tab_template {
-                    children
                     pane size=1 borderless=true {
                         ${zjstatusPlugin}
                     }
+                    children
                 }
                 tab name="dev" focus=true {
                     pane split_direction="vertical" {
