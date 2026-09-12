@@ -11,6 +11,7 @@
 - `homeModules.shell` — shell configuration with Zsh, Nushell, Starship prompt, and Stylix theme integration
 - `homeModules.stylix` — standalone Stylix Home Manager module (only needed if Stylix is not enabled at the NixOS system level)
 - `homeModules.theme` — per-user Stylix theming module applying user-configured themes from the catalog (or falling back to system defaults)
+- `homeModules.ghostty` — Ghostty terminal configuration with 20% transparency (`background-opacity = 0.8`) and Stylix theming integration
 - `homeModules.zellij` — Zellij terminal workspace and session manager with Nushell default shell, centered floating sessionizer popup, and Stylix theming
 
 This repository is intended for reusable Home Manager configuration only.

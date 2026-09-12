@@ -41,6 +41,7 @@
             ./modules/sops.nix
             ./modules/ssh.nix
             ./modules/zellij.nix
+            ./modules/ghostty.nix
           ];
 
           home.username = username;
@@ -123,6 +124,12 @@
         yubikey = {
           imports = [
             ./modules/yubikey.nix
+          ];
+        };
+
+        ghostty = {
+          imports = [
+            ./modules/ghostty.nix
           ];
         };
       };

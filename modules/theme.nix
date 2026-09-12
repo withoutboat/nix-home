@@ -35,13 +35,18 @@ let
   hasVideo = (darkTheme != null && darkTheme ? video) || (lightTheme != null && lightTheme ? video);
 in
 {
-  stylix = lib.mkIf (options ? stylix && darkTheme != null) {
-    polarity = darkTheme.polarity;
-    base16Scheme = darkTheme.base16Scheme;
-    image = darkTheme.image;
-    targets.hyprpaper.enable = lib.mkIf hasVideo (lib.mkDefault false);
-    targets.sway.enable = lib.mkIf hasVideo (lib.mkDefault false);
-  };
+  stylix = lib.mkMerge [
+    (lib.mkIf (options ? stylix) {
+      opacity.terminal = lib.mkDefault 0.8;
+    })
+    (lib.mkIf (options ? stylix && darkTheme != null) {
+      polarity = darkTheme.polarity;
+      base16Scheme = darkTheme.base16Scheme;
+      image = darkTheme.image;
+      targets.hyprpaper.enable = lib.mkIf hasVideo (lib.mkDefault false);
+      targets.sway.enable = lib.mkIf hasVideo (lib.mkDefault false);
+    })
+  ];
 
   specialisation.light.configuration = lib.mkIf (lightTheme != null) {
     stylix = lib.mkIf (options ? stylix) {
