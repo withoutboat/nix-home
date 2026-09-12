@@ -79,8 +79,6 @@ lib.mkMerge [
       enableNushellIntegration = lib.mkDefault true;
       settings = {
         auto_sync = false;
-        sync_frequency = "1h";
-        sync_address = "https://api.atuin.sh";
         search_mode = "fuzzy";
         filter_mode = "global";
         style = "compact";
