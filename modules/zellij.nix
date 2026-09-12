@@ -143,6 +143,8 @@ in
           scrollback_editor = "nvim";
           scroll_buffer_size = 10000;
           copy_on_select = true;
+          show_startup_tips = false;
+          show_release_notes = false;
         };
         layouts = {
           default = ''
@@ -210,6 +212,12 @@ in
           '';
         };
         extraConfig = ''
+          plugins {
+              welcome-screen location="zellij:session-manager" {
+                  welcome_screen false
+              }
+          }
+
           keybinds {
               normal {
                   bind "Ctrl f" {
