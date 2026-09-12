@@ -31,6 +31,7 @@
             ./modules/config.nix
             ./modules/theme.nix
             ./modules/firefox.nix
+            ./modules/apps.nix
             ./modules/ks3.nix
             ./modules/neovim.nix
             ./modules/projects.nix
@@ -109,6 +110,12 @@
         zellij = {
           imports = [
             ./modules/zellij.nix
+          ];
+        };
+
+        apps = {
+          imports = [
+            ./modules/apps.nix
           ];
         };
       };

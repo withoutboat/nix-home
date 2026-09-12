@@ -1,7 +1,11 @@
-{ lib, options, ... }:
+{ lib, options, pkgs, ... }:
 
 lib.mkMerge [
   {
+    home.packages = [
+      pkgs.usbutils
+    ];
+
     programs.zsh = {
       enable = lib.mkDefault true;
       enableCompletion = lib.mkDefault true;
@@ -29,7 +33,7 @@ lib.mkMerge [
         $env.config = ($env.config? | default {})
         $env.config.edit_mode = "vi"
         $env.config.buffer_editor = "nvim"
-        $env.config.keybindings = ($env.config | get -i keybindings | default [] | append [
+        $env.config.keybindings = ($env.config | get -o keybindings | default [] | append [
           {
             name: open_editor_alt_e
             modifier: alt
