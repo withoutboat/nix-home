@@ -1,9 +1,69 @@
 { lib, options, pkgs, ... }:
 
+let
+  vitaly = pkgs.stdenv.mkDerivation rec {
+    pname = "vitaly";
+    version = "0.1.32";
+
+    src =
+      let
+        system = pkgs.stdenv.hostPlatform.system;
+        sources = {
+          x86_64-linux = {
+            url = "https://github.com/bskaplou/vitaly/releases/download/v${version}/vitaly-x86_64-unknown-linux-gnu.tar.xz";
+            hash = "sha256-SVk6DMpKbYISvygUeQLXW6WcMmrrshEKRM6/Ht9L2/8=";
+          };
+          aarch64-linux = {
+            url = "https://github.com/bskaplou/vitaly/releases/download/v${version}/vitaly-aarch64-unknown-linux-gnu.tar.xz";
+            hash = "sha256-heXP+928biVReOx9jUI9CtPlW7wnaDszJKELIbXNNv4=";
+          };
+          x86_64-darwin = {
+            url = "https://github.com/bskaplou/vitaly/releases/download/v${version}/vitaly-x86_64-apple-darwin.tar.xz";
+            hash = "sha256-59Il9YHlXCB87ZIRmOoc4nSfNkrCWLhr4Hoe1mPBBkI=";
+          };
+          aarch64-darwin = {
+            url = "https://github.com/bskaplou/vitaly/releases/download/v${version}/vitaly-aarch64-apple-darwin.tar.xz";
+            hash = "sha256-FVOR1oq6spjN4wnTLs9s2R77dD2zWAMpIjU7G2n4ZJU=";
+          };
+        };
+        selected = sources.${system} or (throw "vitaly: unsupported system ${system}");
+      in
+      pkgs.fetchurl {
+        inherit (selected) url hash;
+      };
+
+    sourceRoot = ".";
+
+    nativeBuildInputs = lib.optionals pkgs.stdenv.isLinux [
+      pkgs.autoPatchelfHook
+    ];
+
+    buildInputs = lib.optionals pkgs.stdenv.isLinux [
+      pkgs.udev
+    ];
+
+    installPhase = ''
+      runHook preInstall
+      mkdir -p $out/bin
+      find . -name vitaly -type f -exec cp {} $out/bin/vitaly \;
+      chmod 755 $out/bin/vitaly
+      runHook postInstall
+    '';
+
+    meta = with lib; {
+      description = "VIA/Vial API client and CLI tool for keyboard configuration";
+      homepage = "https://github.com/bskaplou/vitaly";
+      license = licenses.mit;
+      mainProgram = "vitaly";
+      platforms = platforms.unix;
+    };
+  };
+in
 lib.mkMerge [
   {
     home.packages = [
       pkgs.usbutils
+      vitaly
     ];
 
     programs.zsh = {

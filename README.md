@@ -8,7 +8,7 @@
 - `homeModules.projects` — project and repository manager automating work/personal workspace cloning based on `secrets/projects.yml`
 - `homeModules.config` — user configuration options module (`lightTheme`, `darkTheme`)
 - `homeModules.scripts` — custom scripts module exporting `zellij-sessionizer`, `theme-set`, and `theme-toggle`
-- `homeModules.shell` — shell configuration with Zsh, Nushell, Starship prompt, Atuin unified shell history, and Stylix theme integration
+- `homeModules.shell` — shell configuration with Zsh, Nushell, Starship prompt, Atuin unified shell history, keyboard tooling (`vitaly`), and Stylix theme integration
 - `homeModules.stylix` — standalone Stylix Home Manager module (only needed if Stylix is not enabled at the NixOS system level)
 - `homeModules.theme` — per-user Stylix theming module applying user-configured themes from the catalog (or falling back to system defaults)
 - `homeModules.ghostty` — Ghostty terminal configuration with 20% transparency (`background-opacity = 0.8`) and Stylix theming integration
