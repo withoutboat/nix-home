@@ -317,6 +317,35 @@ in
         zj = "zellij";
         zs = "zellij-sessionizer";
       };
+
+      home.activation.zellijPermissions = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        append_permission() {
+          local file="$1"
+          local path="$2"
+          if [ -f "$file" ] && grep -Fq "$path" "$file"; then
+            return 0
+          fi
+          mkdir -p "$(dirname "$file")"
+          cat <<EOF >> "$file"
+"$path" {
+    ReadApplicationState
+    ChangeApplicationState
+    RunCommands
+}
+EOF
+        }
+
+        grant_to_dirs() {
+          local p="$1"
+          append_permission "''${XDG_CACHE_HOME:-$HOME/.cache}/zellij/permissions.kdl" "$p"
+          if [ -d "$HOME/Library/Caches" ] || [ "$(uname)" = "Darwin" ]; then
+            append_permission "$HOME/Library/Caches/org.Zellij-Contributors.Zellij/permissions.kdl" "$p"
+          fi
+        }
+
+        grant_to_dirs "${config.xdg.configHome}/zellij/plugins/zjstatus.wasm"
+        grant_to_dirs "$HOME/.config/zellij/plugins/zjstatus.wasm"
+      '';
     }
     (lib.optionalAttrs (options ? stylix) {
       stylix.targets.zellij.enable = lib.mkDefault true;
