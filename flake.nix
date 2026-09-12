@@ -32,6 +32,7 @@
             ./modules/theme.nix
             ./modules/firefox.nix
             ./modules/apps.nix
+            ./modules/yubikey.nix
             ./modules/ks3.nix
             ./modules/neovim.nix
             ./modules/projects.nix
@@ -116,6 +117,12 @@
         apps = {
           imports = [
             ./modules/apps.nix
+          ];
+        };
+
+        yubikey = {
+          imports = [
+            ./modules/yubikey.nix
           ];
         };
       };
