@@ -23,37 +23,54 @@ lib.mkMerge [
         };
 
         userChrome = ''
-          /* Move navbar (address bar and buttons) to the bottom of the window */
-          :root:not([inFullscreen]) {
-            --uc-bottom-toolbar-height: calc(39px + var(--toolbarbutton-padding-outer, var(--toolbarbutton-outer-padding, 2px)));
-          }
-
-          :root[uidensity="compact"]:not([inFullscreen]) {
-            --uc-bottom-toolbar-height: calc(32px + var(--toolbarbutton-padding-outer, var(--toolbarbutton-outer-padding, 2px)));
+          /* Move toolbars (tabs and navbar) to the bottom of the window */
+          #main-window > body {
+            display: flex !important;
+            flex-direction: column !important;
           }
 
           #browser,
           #customization-container {
-            margin-bottom: var(--uc-bottom-toolbar-height, 0px) !important;
+            -moz-box-ordinal-group: 0 !important;
+            order: 0 !important;
+            flex: 1 1 auto !important;
           }
 
-          #nav-bar {
-            position: fixed !important;
-            bottom: 0px !important;
-            display: -webkit-box !important;
-            width: 100% !important;
-            z-index: 100 !important;
+          .global-notificationbox,
+          #tab-notification-deck,
+          #notifications-toolbar {
+            -moz-box-ordinal-group: 0 !important;
+            order: 0 !important;
+          }
+
+          #navigator-toolbox,
+          #navigator-toolbox-background {
+            -moz-box-ordinal-group: 1 !important;
+            order: 1 !important;
+            overflow: visible !important;
             opacity: 0.8 !important; /* 20% transparency (80% opacity) */
             transition: opacity 0.2s ease-in-out !important;
+            border-bottom: none !important;
+            border-top: 1px solid var(--chrome-content-separator-color, rgba(0, 0, 0, 0.15)) !important;
           }
 
-          #nav-bar:hover,
-          #nav-bar:focus-within {
+          #navigator-toolbox:hover,
+          #navigator-toolbox:focus-within {
             opacity: 1 !important;
           }
 
-          #nav-bar-customization-target {
-            -webkit-box-flex: 1 !important;
+          #TabsToolbar {
+            background: inherit !important;
+          }
+
+          /* Hide titlebar buttons and spacers on bottom tab bar */
+          #TabsToolbar > :is(.titlebar-buttonbox-container, .titlebar-spacer) {
+            display: none !important;
+          }
+
+          /* Hide toolbars in fullscreen */
+          :root[inFullscreen] #navigator-toolbox {
+            display: none !important;
           }
 
           /* Fix popup panels sizing */
