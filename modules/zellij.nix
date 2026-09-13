@@ -137,6 +137,8 @@ in
       programs.zellij = {
         enable = lib.mkDefault true;
         enableZshIntegration = lib.mkDefault true;
+        attachExistingSession = lib.mkDefault true;
+        exitShellOnExit = lib.mkDefault true;
         settings = {
           default_shell = "nu";
           default_layout = "default";
