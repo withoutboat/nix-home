@@ -16,7 +16,7 @@ lib.mkMerge [
       settings = {
         "github.com" = {
           HostName = "github.com";
-          IdentityFile = "~/.ssh/id_ed25519_sk";
+          IdentityFile = "~/.ssh/id_ed25519";
           IdentitiesOnly = true;
           IdentityAgent = "none";
         };
@@ -24,6 +24,16 @@ lib.mkMerge [
     };
   }
   (lib.mkIf (isEncrypted && options ? sops) {
+    sops.secrets."id_ed25519" = {
+      sopsFile = rawSshSecrets;
+      path = "${config.home.homeDirectory}/.ssh/id_ed25519";
+      mode = "0600";
+    };
+    sops.secrets."id_ed25519.pub" = {
+      sopsFile = rawSshSecrets;
+      path = "${config.home.homeDirectory}/.ssh/id_ed25519.pub";
+      mode = "0644";
+    };
     sops.secrets."id_ed25519_sk" = {
       sopsFile = rawSshSecrets;
       path = "${config.home.homeDirectory}/.ssh/id_ed25519_sk";
