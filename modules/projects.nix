@@ -16,7 +16,8 @@ in
   sops = lib.mkIf isEncrypted {
     secrets."projects.yml" = {
       sopsFile = rawProjectsFile;
-      format = "binary";
+      format = "yaml";
+      key = "";
     };
   };
 
