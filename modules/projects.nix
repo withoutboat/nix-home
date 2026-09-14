@@ -29,7 +29,9 @@ let
       if [ -f "${projectsFile}" ]; then
         mkdir -p "${projectorDir}"
         if [ -n "${if projector != null then "${projector}/bin/projector" else ""}" ]; then
-          ${if projector != null then "${projector}/bin/projector" else "true"} roots "${projectsFile}" > "${rootsFile}" 2>/dev/null || true
+          export PATH="${pkgs.git}/bin:${pkgs.openssh}/bin:$PATH"
+          echo "==> Synchronizing projects with projector..."
+          ${projector}/bin/projector "${projectsFile}" || true
         else
           grep -E '^[a-zA-Z0-9_.-]+:' "${projectsFile}" | grep -v '^sops:' | sed "s|^|$HOME/|; s|:.*||" > "${rootsFile}" || true
         fi
