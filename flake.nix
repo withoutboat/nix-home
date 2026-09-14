@@ -46,7 +46,7 @@
             ./modules/shell.nix
             ./modules/sops.nix
             ./modules/ssh.nix
-            ./modules/zellij.nix
+            ./modules/zellij
             ./modules/ghostty.nix
             ./modules/go.nix
             ./modules/rust.nix
@@ -127,7 +127,7 @@
 
         zellij = {
           imports = [
-            ./modules/zellij.nix
+            ./modules/zellij
           ];
         };
 
