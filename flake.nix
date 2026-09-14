@@ -48,6 +48,9 @@
             ./modules/ssh.nix
             ./modules/zellij.nix
             ./modules/ghostty.nix
+            ./modules/go.nix
+            ./modules/rust.nix
+            ./modules/nodejs.nix
             vialDaemonModule
           ];
 
@@ -143,6 +146,24 @@
         ghostty = {
           imports = [
             ./modules/ghostty.nix
+          ];
+        };
+
+        go = {
+          imports = [
+            ./modules/go.nix
+          ];
+        };
+
+        rust = {
+          imports = [
+            ./modules/rust.nix
+          ];
+        };
+
+        nodejs = {
+          imports = [
+            ./modules/nodejs.nix
           ];
         };
 
