@@ -102,6 +102,12 @@
           ];
         };
 
+        ssh = {
+          imports = [
+            ./modules/ssh.nix
+          ];
+        };
+
         stylix = {
           imports = [
             stylix.homeModules.stylix
