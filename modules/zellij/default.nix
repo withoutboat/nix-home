@@ -47,7 +47,8 @@ in
 
       programs.zellij = {
         enable = lib.mkDefault true;
-        enableZshIntegration = lib.mkDefault true;
+        enableZshIntegration = lib.mkDefault false;
+        enableBashIntegration = lib.mkDefault false;
         attachExistingSession = lib.mkDefault true;
         exitShellOnExit = lib.mkDefault true;
         settings = {
@@ -62,6 +63,40 @@ in
         inherit layouts;
         extraConfig = keybinds;
       };
+
+      programs.zsh.initContent = lib.mkOrder 200 ''
+        if [[ -z "$ZELLIJ" && "$TERM" != "dumb" ]]; then
+          default_nix_dir="$HOME/nix"
+          if [[ "$PWD" == "$HOME" || "$PWD" == "$default_nix_dir" ]]; then
+            if [[ -d "$default_nix_dir" ]]; then
+              cd "$default_nix_dir"
+            fi
+            zellij attach -c nix
+          else
+            session_name=$(basename "$PWD")
+            zellij attach -c "$session_name"
+          fi
+
+          exit
+        fi
+      '';
+
+      programs.bash.initExtra = lib.mkOrder 200 ''
+        if [[ -z "$ZELLIJ" && "$TERM" != "dumb" ]]; then
+          default_nix_dir="$HOME/nix"
+          if [[ "$PWD" == "$HOME" || "$PWD" == "$default_nix_dir" ]]; then
+            if [[ -d "$default_nix_dir" ]]; then
+              cd "$default_nix_dir"
+            fi
+            zellij attach -c nix
+          else
+            session_name=$(basename "$PWD")
+            zellij attach -c "$session_name"
+          fi
+
+          exit
+        fi
+      '';
 
       home.shellAliases = {
         zj = "zellij";

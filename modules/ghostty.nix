@@ -6,6 +6,7 @@ lib.mkMerge [
       enable = lib.mkDefault true;
       settings = {
         background-opacity = lib.mkDefault 0.8;
+        working-directory = lib.mkDefault "~/nix";
       };
     };
   }
