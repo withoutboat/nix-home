@@ -21,14 +21,24 @@
     };
   };
 
-  outputs = { self, nix-bin, nix-hyprland, nix-ks3-infra, nix-neovim, sops-nix, stylix, ... }:
+  outputs =
+    {
+      self,
+      nix-bin,
+      nix-hyprland,
+      nix-ks3-infra,
+      nix-neovim,
+      sops-nix,
+      stylix,
+      ...
+    }:
     let
       vialDaemonModule = import ./modules/vial-daemon.nix { inherit nix-bin; };
       projectsModule = import ./modules/projects.nix { inherit nix-bin; };
     in
     {
       homeModules = {
-        default = { pkgs, username, ... }: {
+        default = { username, ... }: {
           imports = [
             sops-nix.homeManagerModules.sops
             nix-hyprland.homeManagerModules.default
@@ -50,6 +60,7 @@
             ./modules/ghostty.nix
             ./modules/go.nix
             ./modules/rust.nix
+            ./modules/git.nix
             ./modules/nodejs.nix
             vialDaemonModule
           ];
