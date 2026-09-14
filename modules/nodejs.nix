@@ -18,7 +18,6 @@ in
 
   home.packages = with pkgs; [
     nodejs
-    corepack
     pnpm
     yarn
   ];
