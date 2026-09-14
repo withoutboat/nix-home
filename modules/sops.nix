@@ -1,10 +1,7 @@
 { config, lib, pkgs, ... }:
 
 let
-  defaultKeyFile =
-    if builtins.pathExists "/etc/sops/age/keys.txt"
-    then "/etc/sops/age/keys.txt"
-    else "${config.home.homeDirectory}/nix-core/secrets/yubikey-identity.txt";
+  defaultKeyFile = "/etc/sops/age/keys.txt";
 in
 {
   home.packages = [
