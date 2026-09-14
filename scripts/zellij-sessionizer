@@ -9,14 +9,28 @@ else
         "$HOME/dotfiles"
     )
 
-    search_roots=(
-        "$HOME/hiplabs"
-        "$HOME/hiplabs/baseella"
-        "$HOME/hiplabs/matb"
-        "$HOME/hiplabs/zp"
-        "$HOME/personal"
-        "$HOME/personal/infra"
-    )
+    search_roots=()
+
+    # Read project roots dynamically generated from secrets by projector
+    roots_file="${XDG_CONFIG_HOME:-$HOME/.config}/projector/roots"
+    if [[ -r "$roots_file" ]]; then
+        while IFS= read -r root || [[ -n "$root" ]]; do
+            root="${root#"${root%%[![:space:]]*}"}"
+            root="${root%"${root##*[![:space:]]}"}"
+            if [[ -n "$root" && -d "$root" ]]; then
+                search_roots+=("$root")
+            fi
+        done < "$roots_file"
+    elif command -v projector >/dev/null 2>&1; then
+        # Fallback to querying projector roots if available
+        while IFS= read -r root || [[ -n "$root" ]]; do
+            root="${root#"${root%%[![:space:]]*}"}"
+            root="${root%"${root##*[![:space:]]}"}"
+            if [[ -n "$root" && -d "$root" ]]; then
+                search_roots+=("$root")
+            fi
+        done < <(projector roots 2>/dev/null || true)
+    fi
 
     search_dirs=()
     for dir in "${search_roots[@]}"; do
@@ -37,6 +51,9 @@ else
             printf '%s\n' "${existing_standalone[@]}"
         fi
         if [[ ${#search_dirs[@]} -gt 0 ]]; then
+            # Include project directories themselves
+            printf '%s\n' "${search_dirs[@]}"
+            # Include all immediate subdirectories with depth 1
             find "${search_dirs[@]}" -mindepth 1 -maxdepth 1 -type d ! -name ".*" 2>/dev/null
         fi
     } | sort -u | fzf --prompt="Select project > " || true)
