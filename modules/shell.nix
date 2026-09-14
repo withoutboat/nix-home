@@ -1,4 +1,9 @@
-{ lib, options, pkgs, ... }:
+{
+  lib,
+  options,
+  pkgs,
+  ...
+}:
 
 let
   vitaly = pkgs.stdenv.mkDerivation rec {
@@ -65,6 +70,7 @@ lib.mkMerge [
     home.packages = [
       pkgs.usbutils
       vitaly
+      pkgs.jq
     ];
 
     programs.zsh = {
