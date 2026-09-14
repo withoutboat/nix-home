@@ -56,7 +56,17 @@ else
             # Include all immediate subdirectories with depth 1
             find "${search_dirs[@]}" -mindepth 1 -maxdepth 1 -type d ! -name ".*" 2>/dev/null
         fi
-    } | sort -u | fzf --prompt="Select project > " || true)
+    } | sort -u | fzf \
+        --prompt="PROJECT [NORMAL] > " \
+        --header="[NORMAL] j/k: move | i,/: search | Esc: normal | Enter: open | q: quit" \
+        --bind "start:disable-search" \
+        --bind "ctrl-j:down,ctrl-k:up" \
+        --bind "j:down,k:up,q:abort,g:first,G:last" \
+        --bind "esc:disable-search+change-prompt(PROJECT [NORMAL] > )+rebind(j,k,q,g,G,i,a,/)" \
+        --bind "i:enable-search+change-prompt(PROJECT [INSERT] > )+unbind(j,k,q,g,G,i,a,/)" \
+        --bind "a:enable-search+change-prompt(PROJECT [INSERT] > )+unbind(j,k,q,g,G,i,a,/)" \
+        --bind "/:enable-search+change-prompt(PROJECT [INSERT] > )+unbind(j,k,q,g,G,i,a,/)" \
+        || true)
 fi
 
 if [[ -z "${selected:-}" ]]; then
@@ -64,18 +74,17 @@ if [[ -z "${selected:-}" ]]; then
 fi
 
 selected=$(cd "$selected" 2>/dev/null && pwd || echo "$selected")
-selected_name=$(basename "$selected" | tr . _)
+selected="${selected%/}"
+selected_name=$(basename "$selected")
 
 if [[ -z "${ZELLIJ:-}" ]]; then
     # Outside Zellij: attach to existing session or create a new one in the selected folder
     cd "$selected"
     exec zellij attach -c "$selected_name"
 else
-    # Inside Zellij:
-    # If a tab for this project already exists, switch to it; otherwise open a new tab
-    if zellij action query-tab-names 2>/dev/null | grep -Fxq "$selected_name"; then
-        zellij action go-to-tab-name "$selected_name"
-    else
-        zellij action new-tab --cwd "$selected" --name "$selected_name"
+    # Inside Zellij: switch to existing session or create and switch
+    if ! zellij list-sessions -n -s 2>/dev/null | grep -Fxq "$selected_name"; then
+        (cd "$selected" && zellij attach -b -c "$selected_name")
     fi
+    zellij action switch-session "$selected_name"
 fi
