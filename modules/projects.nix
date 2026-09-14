@@ -31,33 +31,78 @@ in
       ${pkgs.zsh}/bin/zsh -c '
         projects_file="$1"
         current_project=""
+        in_sops=0
 
-        while IFS= read -r line || [[ -n "$line" ]]; do
-          trimmed="''${line#"''${line%%[![:space:]]*}"}"
-          trimmed="''${trimmed%"''${trimmed##*[![:space:]]}"}"
+        while IFS= read -r raw_line || [[ -n "$raw_line" ]]; do
+          line="''${raw_line%$'\''\r'\''}"
 
-          [[ -z "$trimmed" || "$trimmed" == \#* ]] && continue
+          # Skip empty lines and full comment lines
+          [[ "$line" =~ ^[[:space:]]*$ || "$line" =~ ^[[:space:]]*# ]] && continue
 
-          if [[ "$trimmed" =~ ^-\ +([^[:space:]]+)$ ]]; then
-            val="''${match[1]}"
-            if [[ "$val" == *@* || "$val" == http* || "$val" == ssh://* || "$val" == *.git ]]; then
-              repo="$val"
-              repo_name="''${repo##*/}"
-              repo_name="''${repo_name##*:}"
-              repo_name="''${repo_name%.git}"
+          # Top-level key: no leading whitespace, ends with colon (e.g. project_name:)
+          if [[ "$line" =~ ^([a-zA-Z0-9_.-]+):[[:space:]]*(#.*)?$ ]]; then
+            key="''${match[1]}"
+            if [[ "$key" == "sops" ]]; then
+              in_sops=1
+              current_project=""
+            else
+              in_sops=0
+              current_project="$key"
+              mkdir -p "$HOME/$current_project"
+            fi
+            continue
+          fi
+
+          # Skip if within SOPS metadata or if no project is active
+          [[ $in_sops -eq 1 || -z "$current_project" ]] && continue
+
+          # Indented lines under the current project are repository entries
+          if [[ "$line" =~ ^[[:space:]]+(.*)$ ]]; then
+            content="''${match[1]}"
+            content="''${content%%[[:space:]]#*}"
+            content="''${content#"''${content%%[![:space:]]*}"}"
+            content="''${content%"''${content##*[![:space:]]}"}"
+
+            repo=""
+            custom_name=""
+
+            if [[ "$content" =~ ^(-[[:space:]]+)?([a-zA-Z0-9_.-]+):[[:space:]]+([^[:space:]].*)$ ]]; then
+              candidate_name="''${match[2]}"
+              candidate_val="''${match[3]}"
+              if [[ "$candidate_name" != "http" && "$candidate_name" != "https" && "$candidate_name" != "ssh" && "$candidate_name" != "git" ]]; then
+                custom_name="$candidate_name"
+                repo="$candidate_val"
+              else
+                repo="$content"
+              fi
+            elif [[ "$content" =~ ^-[[:space:]]+(.*)$ ]]; then
+              repo="''${match[1]}"
+            else
+              repo="$content"
+            fi
+
+            repo="''${repo#\"}"
+            repo="''${repo%\"}"
+            repo="''${repo#'\''}"
+            repo="''${repo%'\''}"
+            repo="''${repo#"''${repo%%[![:space:]]*}"}"
+            repo="''${repo%"''${repo##*[![:space:]]}"}"
+            repo="''${repo%/}"
+
+            if [[ "$repo" == *@* || "$repo" == http* || "$repo" == ssh://* || "$repo" == git://* || "$repo" == *.git ]]; then
+              repo_name="$custom_name"
+              if [[ -z "$repo_name" ]]; then
+                repo_name="''${repo##*/}"
+                repo_name="''${repo_name##*:}"
+                repo_name="''${repo_name%.git}"
+              fi
               target="$HOME/$current_project/$repo_name"
 
               if [[ ! -d "$target/.git" && ! -d "$target" ]]; then
                 echo "Cloning $repo -> $target"
                 ${pkgs.git}/bin/git clone "$repo" "$target" || true
               fi
-              continue
             fi
-          fi
-
-          if [[ "$trimmed" =~ ^-?\ *([a-zA-Z0-9_.-]+):?$ ]]; then
-            current_project="''${match[1]}"
-            mkdir -p "$HOME/$current_project"
           fi
         done < "$projects_file"
       ' zsh "$PROJECTS_FILE"
