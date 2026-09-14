@@ -5,7 +5,7 @@ plugin location="file:${config.xdg.configHome}/zellij/plugins/zjstatus.wasm" {
     format_right  "#[fg=${colors.base0D},bg=${colors.base00}]#[bg=${colors.base0D},fg=${colors.base00},bold]󰓩 #[bg=${colors.base02},fg=${colors.base05},bold] {session} #[fg=${colors.base02},bg=${colors.base00}]"
     format_space  "#[bg=${colors.base00}]"
     format_hide_on_overlength "true"
-    format_precedence "lr"
+    format_precedence "lrc"
 
     border_enabled  "false"
     hide_frame_for_single_pane "true"
