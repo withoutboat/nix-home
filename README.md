@@ -102,8 +102,8 @@ The `projects` module declaratively ensures project directories exist in `$HOME/
 Projects and their repositories are declared in `secrets/projects.yml`:
 
 ```yaml
-- project_name:
-    - git@wb:project_name.git
+project_name:
+  - git@wb:project_name.git
 ```
 
 ### SOPS Secrets Integration
@@ -112,6 +112,8 @@ Projects and their repositories are declared in `secrets/projects.yml`:
 ```nix
 sops.secrets."projects.yml" = {
   sopsFile = ../secrets/projects.yml;
+  format = "yaml";
+  key = "";
 };
 ```
 When encrypted with SOPS (`sops -e -i secrets/projects.yml`), `sops-nix` decrypts the file at runtime and `projects.nix` reads the decrypted path from `config.sops.secrets."projects.yml".path`.

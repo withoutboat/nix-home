@@ -24,6 +24,7 @@
   outputs = { self, nix-bin, nix-hyprland, nix-ks3-infra, nix-neovim, sops-nix, stylix, ... }:
     let
       vialDaemonModule = import ./modules/vial-daemon.nix { inherit nix-bin; };
+      projectsModule = import ./modules/projects.nix { inherit nix-bin; };
     in
     {
       homeModules = {
@@ -40,7 +41,7 @@
             ./modules/yubikey.nix
             ./modules/ks3.nix
             ./modules/neovim.nix
-            ./modules/projects.nix
+            projectsModule
             ./modules/scripts.nix
             ./modules/shell.nix
             ./modules/sops.nix
@@ -73,7 +74,7 @@
 
         projects = {
           imports = [
-            ./modules/projects.nix
+            projectsModule
           ];
         };
 
