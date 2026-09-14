@@ -28,10 +28,10 @@ let
     home.activation.projector = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       if [ -f "${projectsFile}" ]; then
         mkdir -p "${projectorDir}"
-        if [ -n "${if projector != null then "${projector}/bin/projector" else ""}" ]; then
+        if [ -n "${lib.optionalString (projector != null) "${projector}/bin/projector"}" ]; then
           export PATH="${pkgs.git}/bin:${pkgs.openssh}/bin:$PATH"
           echo "==> Synchronizing projects with projector..."
-          ${projector}/bin/projector "${projectsFile}" || true
+          ${lib.optionalString (projector != null) "${projector}/bin/projector \"${projectsFile}\" || true"}
         else
           grep -E '^[a-zA-Z0-9_.-]+:' "${projectsFile}" | grep -v '^sops:' | sed "s|^|$HOME/|; s|:.*||" > "${rootsFile}" || true
         fi
