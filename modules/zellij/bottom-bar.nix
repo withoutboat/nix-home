@@ -4,7 +4,7 @@ plugin location="file:${config.xdg.configHome}/zellij/plugins/zjstatus.wasm" {
     format_left   "{mode}"
     format_space  "#[bg=${colors.base00}]"
     format_hide_on_overlength "true"
-    format_precedence "l"
+    format_precedence "lrc"
 
     border_enabled  "false"
     hide_frame_for_single_pane "true"
