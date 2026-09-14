@@ -5,6 +5,8 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    nix-bin.url = "github:withoutboat/nix-bin";
+    nix-bin.inputs.nixpkgs.follows = "nixpkgs";
     nix-hyprland.url = "github:withoutboat/nix-hyprland";
     nix-ks3-infra.url = "github:withoutboat/nix-ks3-infra";
     nix-ks3-infra.inputs.nixpkgs.follows = "nixpkgs";
@@ -19,7 +21,10 @@
     };
   };
 
-  outputs = { self, nix-hyprland, nix-ks3-infra, nix-neovim, sops-nix, stylix, ... }:
+  outputs = { self, nix-bin, nix-hyprland, nix-ks3-infra, nix-neovim, sops-nix, stylix, ... }:
+    let
+      vialDaemonModule = import ./modules/vial-daemon.nix { inherit nix-bin; };
+    in
     {
       homeModules = {
         default = { pkgs, username, ... }: {
@@ -42,6 +47,7 @@
             ./modules/ssh.nix
             ./modules/zellij.nix
             ./modules/ghostty.nix
+            vialDaemonModule
           ];
 
           home.username = username;
@@ -130,6 +136,12 @@
         ghostty = {
           imports = [
             ./modules/ghostty.nix
+          ];
+        };
+
+        vial-daemon = {
+          imports = [
+            vialDaemonModule
           ];
         };
       };
